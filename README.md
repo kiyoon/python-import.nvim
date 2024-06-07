@@ -18,7 +18,7 @@ Install with lazy.nvim:
 ```lua
   {
     "kiyoon/python-import.nvim",
-    build = "pipx install .",
+    build = "pipx install . --force",
     keys = {
       {
         "<M-CR>",

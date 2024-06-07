@@ -20,19 +20,8 @@ Steps to reproduce the behavior:
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
-**Logs in `/tmp/jupynium/logs/`**
-The tmp directory path can be different in a different OS.  
-Alternatively, run `:JupyniumStartAndAttachToServerInTerminal` to see the output directly in neovim.
 
-<details>
-<code>
-
-Paste the output here
-
-</code>
-</details>
-
-**Output of `jupynium --version`**
+**Output of `python-import --version`**
 
 ```
 Paste the output here

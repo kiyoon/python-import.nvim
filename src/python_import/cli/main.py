@@ -1,4 +1,4 @@
-# ruff: noqa: UP007
+# ruff: noqa: UP007, T201
 from __future__ import annotations
 
 import json
@@ -12,9 +12,25 @@ import tree_sitter_python as tspython
 import typer
 from tree_sitter import Language, Parser
 
+import python_import
+
 PY_LANGUAGE = Language(tspython.language())
 
 app = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
+
+
+def version_callback(value: bool):
+    if value:
+        print(f"python-import v{python_import.__version__}")
+        raise typer.Exit()
+
+
+@app.callback()
+def common(
+    ctx: typer.Context,
+    version: bool = typer.Option(None, "--version", callback=version_callback),
+):
+    pass
 
 
 def _get_node(tree: tree_sitter.Tree, row_col: tuple[int, int]):
@@ -72,6 +88,12 @@ def count(
     module_name: str,
 ) -> None:
     """
+    Count python imports in a project and print them in descending order of count.
+
+    For example,
+    00002:from my_module import logging
+    00001:import logging
+
     Todo:
         - [ ] Test import abcd
         - [ ] Test import abcd as efg
@@ -304,9 +326,9 @@ def dummy_do_not_use() -> None:
     print(count.__doc__)
 
 
+def version():
+    print(python_import.__version__)
+
+
 if __name__ == "__main__":
     app()
-    # find_python_import_in_project("/home/kiyoon/project/dti-db-curation", "abcd")
-    # find_python_import_in_project(
-    #     "/Users/kiyoon/project/dti-db-curation", "ManualCurationUpdater"
-    # )
