@@ -3,9 +3,17 @@ if not status then
 	notify = function(message, level, opts) end
 end
 
-local lookup_table = require("python-import.lookup_table")
+local lookup_table = require("python_import.lookup_table")
+local ts_utils = require("python_import.ts_utils")
+local health = require("python_import.health")
 
-local function find_python_after_module_docstring(max_lines)
+M = {}
+
+---Return line after the first comments and docstring.
+---It iterates e.g. 50 first lines and obtains treesitter nodes to check the syntax (string or comment)
+---@param max_lines integer?
+---@return integer?
+local function find_line_after_module_docstring(max_lines)
 	max_lines = max_lines or 50
 	local bufnr = vim.fn.bufnr()
 	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, max_lines, false)
@@ -32,7 +40,9 @@ local function find_python_after_module_docstring(max_lines)
 	return nil
 end
 
-local function find_first_python_import(max_lines)
+---Find the first import statement in a python file.
+---@param max_lines integer?
+local function find_line_first_import(max_lines)
 	max_lines = max_lines or 50
 	local bufnr = vim.fn.bufnr()
 	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, max_lines, false)
@@ -49,7 +59,9 @@ local function find_first_python_import(max_lines)
 	return nil
 end
 
-local function find_last_python_import(max_lines)
+---Find the last import statement in a python file.
+---@param max_lines integer?
+local function find_line_last_import(max_lines)
 	max_lines = max_lines or 50
 	local bufnr = vim.fn.bufnr()
 	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, max_lines, false)
@@ -67,11 +79,13 @@ local function find_last_python_import(max_lines)
 	return nil
 end
 
-local function find_python_first_party_modules()
-	-- find src/module_name in git root
-
+---Find src/module_name in git root
+---@param bufnr integer?
+---@return string[]?
+local function find_python_first_party_modules(bufnr)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	-- local git_root = vim.fn.systemlist "git rev-parse --show-toplevel"
-	local git_root = vim.fs.root(0, { ".git", "pyproject.toml" })
+	local git_root = vim.fs.root(bufnr, { ".git", "pyproject.toml" })
 	if git_root == nil then
 		return nil
 	end
@@ -104,6 +118,9 @@ local function find_python_first_party_modules()
 	return modules
 end
 
+---Get current word in a buffer
+---It is aware of the insert mode (move column by -1 if the mode is insert).
+---@return string
 local function get_current_word()
 	local line = vim.fn.getline(".")
 	local col = vim.fn.col(".")
@@ -126,12 +143,24 @@ local function get_current_word()
 	return line:sub(start + 1, finish - 1)
 end
 
-local first_party_modules = find_python_first_party_modules()
+local buf_to_first_party_modules = {}
 
+local function get_cached_first_party_modules(bufnr)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
+
+	if buf_to_first_party_modules[bufnr] == nil then
+		buf_to_first_party_modules[bufnr] = find_python_first_party_modules(bufnr)
+	end
+
+	return buf_to_first_party_modules[bufnr]
+end
+
+---@param bufnr integer
 ---@param statement string
 ---@param ts_node TSNode?
 ---@return string[]?
-local function get_python_import(statement, ts_node)
+local function get_import(bufnr, statement, ts_node)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	if statement == nil then
 		return nil
 	end
@@ -176,8 +205,8 @@ local function get_python_import(statement, ts_node)
 	end
 
 	-- extend from .. import *
-	if first_party_modules ~= nil then
-		local first_module = first_party_modules[1]
+	if get_cached_first_party_modules(bufnr) ~= nil then
+		local first_module = get_cached_first_party_modules(bufnr)[1]
 		-- if statement ends with _DIR, import from the first module (from project import PROJECT_DIR)
 		if statement:match("_DIR$") then
 			return { "from " .. first_module .. " import " .. statement }
@@ -203,48 +232,48 @@ local function get_python_import(statement, ts_node)
 	-- Sorted from the most frequently used
 	-- e.g. 00020:import ABCD
 
-	local project_root = vim.fs.root(0, { ".git", "pyproject.toml" })
-	if project_root ~= nil then
-		local find_import_outputs = vim.api.nvim_exec(
-			[[w !/usr/bin/python3 ~/.config/nvim/find_python_import_in_project.py count ']]
-				.. project_root
-				.. [[' ']]
-				.. statement
-				.. [[']],
-			{ output = true }
-		)
+	local requirements_installed = health.is_python_cli_installed()
 
-		if find_import_outputs ~= nil then
-			-- strip
-			find_import_outputs = find_import_outputs:gsub("^\n", "")
-			-- find_import_outputs = find_import_outputs:match "^%s*(.*)%s*$"
-			-- strip trailing newline
-			find_import_outputs = find_import_outputs:gsub("\n$", "")
-			-- find_import_outputs = find_import_outputs:match "^%s*(.*)%s*$"
+	if requirements_installed then
+		local project_root = vim.fs.root(0, { ".git", "pyproject.toml" })
+		if project_root ~= nil then
+			local find_import_outputs = vim.api.nvim_exec(
+				[[w !python-import count ']] .. project_root .. [[' ']] .. statement .. [[']],
+				{ output = true }
+			)
 
-			if find_import_outputs ~= "" then
-				local find_import_outputs_split = vim.split(find_import_outputs, "\n")
-				-- print(#find_import_outputs_split)
-				if #find_import_outputs_split == 1 then
-					local import_statement = { find_import_outputs_split[1]:sub(7) } -- remove the count
-					return import_statement
+			if find_import_outputs ~= nil then
+				-- strip
+				find_import_outputs = find_import_outputs:gsub("^\n", "")
+				-- find_import_outputs = find_import_outputs:match "^%s*(.*)%s*$"
+				-- strip trailing newline
+				find_import_outputs = find_import_outputs:gsub("\n$", "")
+				-- find_import_outputs = find_import_outputs:match "^%s*(.*)%s*$"
+
+				if find_import_outputs ~= "" then
+					local find_import_outputs_split = vim.split(find_import_outputs, "\n")
+					-- print(#find_import_outputs_split)
+					if #find_import_outputs_split == 1 then
+						local import_statement = { find_import_outputs_split[1]:sub(7) } -- remove the count
+						return import_statement
+					end
+
+					local outputs_to_inputlist = {}
+					for i, v in ipairs(find_import_outputs_split) do
+						local count = tonumber(v:sub(1, 5))
+						local import_statement = v:sub(7) -- remove the count
+
+						outputs_to_inputlist[i] = string.format("%d. count %d: %s", i, count, import_statement)
+					end
+
+					local choice = vim.fn.inputlist(outputs_to_inputlist)
+					if choice == 0 then
+						return nil
+					end
+
+					local import_statement = find_import_outputs_split[choice]:sub(7) -- remove the count
+					return { import_statement }
 				end
-
-				local outputs_to_inputlist = {}
-				for i, v in ipairs(find_import_outputs_split) do
-					local count = tonumber(v:sub(1, 5))
-					local import_statement = v:sub(7) -- remove the count
-
-					outputs_to_inputlist[i] = string.format("%d. count %d: %s", i, count, import_statement)
-				end
-
-				local choice = vim.fn.inputlist(outputs_to_inputlist)
-				if choice == 0 then
-					return nil
-				end
-
-				local import_statement = find_import_outputs_split[choice]:sub(7) -- remove the count
-				return { import_statement }
 			end
 		end
 	end
@@ -252,10 +281,12 @@ local function get_python_import(statement, ts_node)
 	return { "import " .. statement }
 end
 
+---@param bufnr integer
 ---@param module string
 ---@param ts_node TSNode?
 ---@return integer?, string[]?
-local function add_python_import(module, ts_node)
+local function add_import(bufnr, module, ts_node)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	-- strip
 	module = module:match("^%s*(.*)%s*$")
 	if module == "" then
@@ -267,10 +298,10 @@ local function add_python_import(module, ts_node)
 
 	local import_statements = nil
 	-- prefer to add after last import
-	local line_number = find_last_python_import()
+	local line_number = find_line_last_import()
 	if line_number == nil then
 		-- if no import, add to first empty line
-		line_number = find_python_after_module_docstring()
+		line_number = find_line_after_module_docstring()
 		if line_number == nil then
 			line_number = 1
 		end
@@ -278,7 +309,7 @@ local function add_python_import(module, ts_node)
 		line_number = line_number + 1 -- add after last import
 	end
 
-	import_statements = get_python_import(module, ts_node)
+	import_statements = get_import(bufnr, module, ts_node)
 	if import_statements == nil then
 		notify("No import statement found or it was aborted, for `" .. module .. "`", "warn", {
 			title = "Python auto import",
@@ -295,34 +326,46 @@ local function add_python_import(module, ts_node)
 	return line_number, import_statements
 end
 
-local function add_python_import_current_word()
+---@param winnr integer?
+local function add_import_current_word(winnr)
+	winnr = winnr or vim.api.nvim_get_current_win()
+	local bufnr = vim.api.nvim_win_get_buf(winnr)
+
 	local module = get_current_word()
-	local node = ts_utils.get_node_at_cursor()
+	local node = ts_utils.get_node_at_cursor(winnr)
 	-- local module = vim.fn.expand "<cword>"
-	return add_python_import(module, node)
+	return add_import(bufnr, module, node)
 end
 
-local function add_python_import_current_selection()
+local function add_import_current_selection()
 	vim.cmd([[normal! "sy]])
 	local node = ts_utils.get_node_at_cursor()
-	return add_python_import(vim.fn.getreg("s"), node)
+	return add_import(0, vim.fn.getreg("s"), node)
 end
 
-vim.keymap.set("n", "<leader>i", function()
-	local line_number, _ = add_python_import_current_word()
+-- vim.keymap.set("n", "<leader>i",
+-- , { silent = true, desc = "Add python import and move cursor" })
+M.add_import_current_word_and_move_cursor = function()
+	local line_number, _ = add_import_current_word()
 	if line_number ~= nil then
 		vim.cmd([[normal! ]] .. line_number .. [[G0]])
 	end
-end, { silent = true, desc = "Add python import and move cursor" })
-vim.keymap.set("x", "<leader>i", function()
-	local line_number, _ = add_python_import_current_selection()
-	if line_number ~= nil then
-		vim.cmd([[normal! ]] .. line_number .. [[G0]])
-	end
-end, { silent = true, desc = "Add python import and move cursor" })
+end
 
-vim.keymap.set({ "n", "i" }, "<M-CR>", function()
-	local line_number, import_statements = add_python_import_current_word()
+-- vim.keymap.set("x", "<leader>i",
+-- , { silent = true, desc = "Add python import and move cursor" })
+M.add_import_current_selection_and_move_cursor = function()
+	local line_number, _ = add_import_current_selection()
+	if line_number ~= nil then
+		vim.cmd([[normal! ]] .. line_number .. [[G0]])
+	end
+end
+
+-- vim.keymap.set({ "n", "i" }, "<M-CR>",
+-- , { silent = true, desc = "Add python import" })
+
+M.add_import_current_word_and_notify = function()
+	local line_number, import_statements = add_import_current_word()
 	if line_number ~= nil then
 		notify(import_statements, "info", {
 			title = "Python import added at line " .. line_number,
@@ -332,9 +375,12 @@ vim.keymap.set({ "n", "i" }, "<M-CR>", function()
 			end,
 		})
 	end
-end, { silent = true, desc = "Add python import" })
-vim.keymap.set("x", "<M-CR>", function()
-	local line_number, import_statements = add_python_import_current_selection()
+end
+
+-- vim.keymap.set("x", "<M-CR>",
+-- , { silent = true, desc = "Add python import" })
+M.add_import_current_selection_and_notify = function()
+	local line_number, import_statements = add_import_current_selection()
 	if line_number ~= nil then
 		notify(import_statements, "info", {
 			title = "Python import added at line " .. line_number,
@@ -344,15 +390,17 @@ vim.keymap.set("x", "<M-CR>", function()
 			end,
 		})
 	end
-end, { silent = true, desc = "Add python import" })
+end
 
-vim.keymap.set({ "n" }, "<space>tr", function()
+-- vim.keymap.set({ "n" }, "<space>tr",
+-- , { silent = true, desc = "Add rich traceback install" })
+M.add_rich_traceback = function()
 	local statements = { "import rich.traceback", "", "rich.traceback.install(show_locals=True)", "" }
 
-	local line_number = find_first_python_import() ---@type integer | nil
+	local line_number = find_line_first_import() ---@type integer | nil
 
 	if line_number == nil then
-		line_number = find_python_after_module_docstring()
+		line_number = find_line_after_module_docstring()
 		if line_number == nil then
 			line_number = 1
 		end
@@ -375,8 +423,6 @@ vim.keymap.set({ "n" }, "<space>tr", function()
 			vim.bo[buf].filetype = "python"
 		end,
 	})
-end, { silent = true, desc = "Add rich traceback install" })
-
-M = {}
+end
 
 return M

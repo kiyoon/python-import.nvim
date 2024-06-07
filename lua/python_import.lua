@@ -1,4 +1,4 @@
-local config = require("python-import.config")
+local config = require("python_import.config")
 
 local M = {}
 
