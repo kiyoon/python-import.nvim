@@ -394,6 +394,18 @@ M.python_builtins = {
   "vars",
   "zip",
   "__import__",
+  "__build_class__",
+  "__debug__",
+  "__doc__",
+  "__loader__",
+  "__name__",
+  "__package__",
+  "__spec__",
+  "__annotations__",
+  "__dict__",
+  "__dir__",
+  "__file__",
+  "__cached__",
   "_",
 }
 
