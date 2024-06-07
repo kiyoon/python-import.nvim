@@ -7,7 +7,7 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
 ## Requirements
 
 - Neovim >= 0.10
-- pipx
+- pipx (or any other way to install `python-import` cli in PATH)
 - ripgrep (`brew install ripgrep` or `cargo install ripgrep`)
 - fd (`brew install fd`, `cargo install fd-find` or `npm install -g fd-find`)
 
@@ -18,6 +18,7 @@ Install with lazy.nvim:
 ```lua
   {
     "kiyoon/python-import.nvim",
+    build = "pipx install .",
     keys = {
       {
         "<M-CR>",
@@ -44,7 +45,7 @@ Install with lazy.nvim:
         function()
           require("python_import.api").add_import_current_word_and_move_cursor()
         end,
-        mode = { "i", "n" },
+        mode = "n",
         silent = true,
         desc = "Add python import and move cursor",
         ft = "python",
@@ -77,4 +78,16 @@ Install with lazy.nvim:
 
 ## Health check
 
+Run `:checkhealth python_import` and see if python-import.nvim is installed correctly.  
+You need to disable lazy loading or run any commands in a python file to activate the plugin first.
 
+```
+==============================================================================
+python_import: require("python_import.health").check()
+
+python-import ~
+- OK Using Neovim >= 0.10.0
+- OK `rg` is installed
+- OK `fd` is installed
+- OK `python-import` is installed
+```
