@@ -1,19 +1,45 @@
-# python-import.nvim
+# 🐍 python-import.nvim
 
 A simple tool that auto-inserts import statements.
 
+The function receives the current word and treesitter node under the cursor.  
+Most will use the current word to find the import statement, but the treesitter node can be used to find the import statement more accurately. (e.g. `torch.utils.data.DataLoader` -> `import torch.utils.data`)
+
+1. Match lookup table with the current word
+2. If there is a match, insert the import statement
+3. If there is no match, rank all import statements by occurrence in the project and prompt the user to select one.
+4. If no match in the project either, just `import <word>`.
+
+It uses treesitter to find the most suitable location to insert the import statement. (e.g. after the docstring and comments, or at the last import statement)
+
+This plugin doesn't detect duplicated imports. Use `ruff` to sort imports.
+
+### Lookup table examples
+
+- `Path` -> `from pathlib import Path`
+- `np` -> `import numpy as np`
+- `torch` -> `import torch`
+- `logging` -> `import logging`
+- `logger` ->  
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+```
+
 NOTE: This is work-in-progress and not yet ready for public. There isn't much customisation options and the behaviour can change rapidly.
 
-## Requirements
+## 🛠️ Installation
 
-- Neovim >= 0.10
+### Requirements
+
+- 💻 Neovim >= 0.10
 - pipx (or any other way to install `python-import` cli in PATH)
 - ripgrep (`brew install ripgrep` or `cargo install ripgrep`)
 - fd (`brew install fd`, `cargo install fd-find` or `npm install -g fd-find`)
 
-## Installation
 
-Install with lazy.nvim:
+### Install with lazy.nvim:
 
 ```lua
   {
@@ -76,7 +102,7 @@ Install with lazy.nvim:
   },
 ```
 
-## Health check
+###  🏋️ Health check
 
 Run `:checkhealth python_import` and see if python-import.nvim is installed correctly.  
 You need to disable lazy loading or run any commands in a python file to activate the plugin first.
