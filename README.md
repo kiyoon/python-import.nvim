@@ -97,9 +97,24 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
       },
     },
     config = function()
-      require("python_import").setup {}
+      require("python_import").setup {
+        extend_lookup_table = {
+          import = {
+            -- "pickle",
+          },
+          import_as = {
+            -- np = "numpy",
+            -- pd = "pandas",
+          },
+          import_from = {
+            -- tqdm = "tqdm.auto",
+            -- nn = "torch",
+          },
+        },
+      }
     end,
   },
+  "rcarriga/nvim-notify",   -- optional
 ```
 
 ###  🏋️ Health check

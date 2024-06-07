@@ -3,7 +3,7 @@ M = {}
 -- If nothing is found, it will return `import ..` anyway.
 -- However, it might take some time to search the candidate,
 -- so we define a list of common imports here.
-M.python_import = {
+M.default_import = {
   "pickle",
   "os",
   "sys",
@@ -41,12 +41,7 @@ M.python_import = {
   "torch",
 }
 
-M.is_python_import = {}
-for _, v in ipairs(M.python_import) do
-  M.is_python_import[v] = true
-end
-
-M.python_import_as = {
+M.default_import_as = {
   mp = "multiprocessing",
   np = "numpy",
   pd = "pandas",
@@ -59,7 +54,7 @@ M.python_import_as = {
   rx = "rustworkx",
 }
 
-M.python_import_from = {
+M.default_import_from = {
   ABC = "abc",
   ABCMeta = "abc",
   abstractclassmethod = "abc",
@@ -408,6 +403,15 @@ M.python_builtins = {
   "__cached__",
   "_",
 }
+
+M.import = {}
+M.is_import = {}
+-- for _, v in ipairs(M.import) do
+--   M.is_import[v] = true
+-- end
+
+M.import_as = {}
+M.import_from = {}
 
 M.ban_from_import = {}
 for _, v in ipairs(M.python_keywords) do
