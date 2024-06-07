@@ -1,0 +1,156 @@
+[build-system]
+requires = ["setuptools>=60", "versioneer[toml]==0.29"]
+build-backend = "setuptools.build_meta"
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "src/python_import/_version.py" # CHANGE
+versionfile_build = "python_import/_version.py"      # CHANGE
+tag_prefix = "v"
+parentdir_prefix = "python_import-"                  # CHANGE
+
+[project]
+name = "python-import" # CHANGE
+dynamic = ["version", "dependencies", "optional-dependencies"]
+description = "Neovim plugin for python autoimports." # OPTIONALLY CHANGE
+authors = [
+  { name = "Kiyoon Kim" }, # OPTIONALLY CHANGE
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9,<3.13"
+classifiers = [
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+keywords = ["neovim", "nvim", "nvim-plugin", "python", "python-import"]
+
+[project.urls]
+"Homepage" = "https://github.com/kiyoon/python-import.nvim" # OPTIONALLY CHANGE
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["deps/requirements.in"]}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+python-import = "python_import.cli:app"
+
+[tool.pytest.ini_options]
+addopts = "--cov=python_import" # CHANGE (name of the importing module name)
+testpaths = ["tests"]
+
+log_cli = true
+log_cli_level = "INFO"
+
+[tool.ruff]
+src = ["src"]  # for ruff isort
+extend-exclude = [
+  "src/python_import/_version.py",  # CHANGE
+  "tests/sample_projects/project1/*",
+  "scripts/version_from_tag.py",
+]
+
+[tool.ruff.lint]
+# OPTIONALLY ADD MORE LATER
+select = [
+  # flake8
+  "E",
+  "F",
+  "W",
+  "B",    # Bugbear
+  "D",    # Docstring
+  "D213", # Multi-line docstring summary should start at the second line (replace D212)
+  "N",    # Naming
+  "C4",   # flake8-comprehensions
+  "UP",   # pyupgrade
+  "SIM",  # simplify
+  "RUF",  # ruff-specific
+  "RET501",  # return
+  "RET502",  # return
+  "RET503",  # return
+  "PTH",  # path
+  "NPY",  # numpy
+  "PYI",  # type stubs for pyright/pylance
+  "PT",   # pytest
+  "PIE",  #
+  "LOG",  # logging
+  "COM818",  # comma misplaced
+  "COM819",  # comma
+  "DTZ",  # datetime
+  "YTT",
+  "ASYNC",
+
+  # Not important
+  "T10",  # debug statements
+  "T20",  # print statements
+]
+
+ignore = [
+  "E402",    # Module level import not at top of file
+  "W293",    # Blank line contains whitespace
+  "W291",    # Trailing whitespace
+  "D10",     # Missing docstring in public module / function / etc.
+  "D200",    # One-line docstring should fit on one line with quotes
+  "D212",    # Multi-line docstring summary should start at the first line
+  "D417",    # require documentation for every function parameter.
+  "D401",    # require an imperative mood for all docstrings.
+  "PTH123",  # Path.open should be used instead of built-in open
+  "PT006",   # Pytest parameterize style
+  "N812",    # Lowercase `functional` imported as non-lowercase `F` (import torch.nn.functional as F)
+  "NPY002",  # legacy numpy random
+  "UP017",   # datetime.timezone.utc -> datetime.UTC
+  "SIM108",  # use ternary operator instead of if-else
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.pycodestyle]
+# Black or ruff will enforce line length to be 88, except for docstrings and comments.
+# We set it to 120 so we have more space for docstrings and comments.
+max-line-length = 120
+
+[tool.ruff.lint.isort]
+# combine-as-imports = true
+known-third-party = ["wandb"]
+
+## Uncomment this if you want to use Python < 3.10
+required-imports = [
+  "from __future__ import annotations",
+]
+
+[tool.ruff.lint.flake8-tidy-imports]
+# Ban certain modules from being imported at module level, instead requiring
+# that they're imported lazily (e.g., within a function definition, if TYPE_CHECKING, etc.)
+# NOTE: Ruff code TID is currently disabled, so this settings doesn't do anything.
+banned-module-level-imports = ["torch", "tensorflow"]
+
+[tool.pyright]
+include = ["src"]
+
+typeCheckingMode = "standard"
+autoSearchPaths = true
+useLibraryCodeForTypes = true
+autoImportCompletions = true
+diagnosticsMode = "openFilesOnly"
+
+reportUnusedImports = false
+# reportUnusedVariable = false
+# reportUnusedClass = "warning"
+# reportUnusedFunction = "warning"
+# reportUndefinedVariable = false  # ruff handles this with F821
+
+pythonVersion = "3.9"
+
+[tool.coverage.report]
+omit = [
+  "src/python_import/_version.py", # CHANGE
+  # OPTIONALLY ADD MORE LATER
+]
