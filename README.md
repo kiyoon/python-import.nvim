@@ -10,7 +10,7 @@ Most will use the current word to find the import statement, but the treesitter 
 ```mermaid
 graph TD
     A[Current word] --> B[Lookup table]
-    B --> C<Match?>
+    B --> C[Match found?]
     C -->|Yes| D[Insert import statement]
     C -->|No| E[Find imports in project]
     E --> F<Match found?>
