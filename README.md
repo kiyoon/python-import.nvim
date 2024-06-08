@@ -2,6 +2,8 @@
 
 A simple tool that auto-inserts import statements.
 
+https://github.com/kiyoon/python-import.nvim/assets/12980409/8a8f580f-16de-460c-af32-23fab7d2a35e
+
 The function receives the current word and treesitter node under the cursor.  
 Most will use the current word to find the import statement, but the treesitter node can be used to find the import statement more accurately. (e.g. `torch.utils.data.DataLoader` -> `import torch.utils.data`)
 
