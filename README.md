@@ -15,7 +15,7 @@ graph TD
     C -->|No| E[Find imports in project]
     E --> F[Match found?]
     F -->|Yes| G[Select one and insert import statement]
-    F -->|No| H[Insert `import <word>`]
+    F -->|No| H[Insert `import \<word\>`]
 ```
 
 1. Match lookup table with the current word
