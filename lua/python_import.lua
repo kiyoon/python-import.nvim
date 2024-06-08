@@ -18,6 +18,12 @@ function M.setup(opts)
     vim.tbl_deep_extend("force", {}, lookup_table.default_import_as, config.opts.extend_lookup_table.import_as)
   lookup_table.import_from =
     vim.tbl_deep_extend("force", {}, lookup_table.default_import_from, config.opts.extend_lookup_table.import_from)
+  lookup_table.statement_after_imports = vim.tbl_deep_extend(
+    "force",
+    {},
+    lookup_table.default_statement_after_imports,
+    config.opts.extend_lookup_table.statement_after_imports
+  )
 
   -- make lookup table for faster lookup
   for _, v in ipairs(lookup_table.import) do

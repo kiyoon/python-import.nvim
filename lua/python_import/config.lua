@@ -14,6 +14,9 @@ M.default_opts = {
       -- tqdm = "tqdm.auto",
       -- nn = "torch",
     },
+    statement_after_imports = {
+      -- logger = { "import my_custom_logger", "", "logger = my_custom_logger.get_logger()" },
+    },
   },
 }
 

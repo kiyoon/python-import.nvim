@@ -79,7 +79,7 @@ end
 ---Find src/module_name in git root
 ---@param bufnr integer?
 ---@return string[]?
-function M.find_python_first_party_modules(bufnr)
+local function find_python_first_party_modules(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   -- local git_root = vim.fn.systemlist "git rev-parse --show-toplevel"
   local git_root = vim.fs.root(bufnr, { ".git", "pyproject.toml" })
@@ -146,7 +146,7 @@ function M.get_cached_first_party_modules(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
 
   if buf_to_first_party_modules[bufnr] == nil then
-    buf_to_first_party_modules[bufnr] = M.find_python_first_party_modules(bufnr)
+    buf_to_first_party_modules[bufnr] = find_python_first_party_modules(bufnr)
   end
 
   return buf_to_first_party_modules[bufnr]

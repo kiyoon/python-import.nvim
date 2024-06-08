@@ -100,9 +100,14 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
     },
     opts = {
       -- Example 1:
-      -- Default behaviour for `tqdm` is `from tqdm.auto import tqdm`.
-      -- If you want to change it to `import tqdm`, you can set `import = {"tqdm"}` and `import_from = {tqdm = nil}` here.
-      -- If you want to change it to `from tqdm import tqdm`, you can set `import_from = {tqdm = "tqdm"}` here.
+        -- Default behaviour for `tqdm` is `from tqdm.auto import tqdm`.
+        -- If you want to change it to `import tqdm`, you can set `import = {"tqdm"}` and `import_from = {tqdm = nil}` here.
+        -- If you want to change it to `from tqdm import tqdm`, you can set `import_from = {tqdm = "tqdm"}` here.
+
+      -- Example 2:
+        -- Default behaviour for `logger` is `import logging`, ``, `logger = logging.getLogger(__name__)`.
+        -- If you want to change it to `import my_custom_logger`, ``, `logger = my_custom_logger.get_logger()`,
+        -- you can set `statement_after_imports = {logger = {"import my_custom_logger", "", "logger = my_custom_logger.get_logger()"}}` here.
       extend_lookup_table = {
         import = {
           -- "tqdm",
@@ -115,6 +120,9 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
         import_from = {
           -- tqdm = nil,
           -- tqdm = "tqdm",
+        },
+        statement_after_imports = {
+          -- logger = { "import my_custom_logger", "", "logger = my_custom_logger.get_logger()" },
         },
       },
     },

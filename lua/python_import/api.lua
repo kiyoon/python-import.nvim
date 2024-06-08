@@ -11,12 +11,12 @@ local utils = require "python_import.utils"
 M = {}
 
 ---@param bufnr integer
----@param statement string
+---@param word string
 ---@param ts_node TSNode?
 ---@return string[]?
-local function get_import(bufnr, statement, ts_node)
+local function get_import(bufnr, word, ts_node)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
-  if statement == nil then
+  if word == nil then
     return nil
   end
 
@@ -55,31 +55,31 @@ local function get_import(bufnr, statement, ts_node)
     end
   end
 
-  if statement == "logger" then
-    return { "import logging", "", "logger = logging.getLogger(__name__)" }
+  if lookup_table.statement_after_imports[word] ~= nil then
+    return lookup_table.statement_after_imports[word]
   end
 
   -- extend from .. import *
   if utils.get_cached_first_party_modules(bufnr) ~= nil then
     local first_module = utils.get_cached_first_party_modules(bufnr)[1]
     -- if statement ends with _DIR, import from the first module (from project import PROJECT_DIR)
-    if statement:match "_DIR$" then
-      return { "from " .. first_module .. " import " .. statement }
-    elseif statement == "setup_logging" then
+    if word:match "_DIR$" then
+      return { "from " .. first_module .. " import " .. word }
+    elseif word == "setup_logging" then
       return { "from " .. first_module .. ".utils.log import setup_logging" }
     end
   end
 
-  if lookup_table.is_import[statement] then
-    return { "import " .. statement }
+  if lookup_table.is_import[word] then
+    return { "import " .. word }
   end
 
-  if lookup_table.import_as[statement] ~= nil then
-    return { "import " .. lookup_table.import_as[statement] .. " as " .. statement }
+  if lookup_table.import_as[word] ~= nil then
+    return { "import " .. lookup_table.import_as[word] .. " as " .. word }
   end
 
-  if lookup_table.import_from[statement] ~= nil then
-    return { "from " .. lookup_table.import_from[statement] .. " import " .. statement }
+  if lookup_table.import_from[word] ~= nil then
+    return { "from " .. lookup_table.import_from[word] .. " import " .. word }
   end
 
   -- Can't find from pre-defined tables.
@@ -92,10 +92,8 @@ local function get_import(bufnr, statement, ts_node)
   if requirements_installed then
     local project_root = vim.fs.root(0, { ".git", "pyproject.toml" })
     if project_root ~= nil then
-      local find_import_outputs = vim.api.nvim_exec(
-        [[w !python-import count ']] .. project_root .. [[' ']] .. statement .. [[']],
-        { output = true }
-      )
+      local find_import_outputs =
+        vim.api.nvim_exec([[w !python-import count ']] .. project_root .. [[' ']] .. word .. [[']], { output = true })
 
       if find_import_outputs ~= nil then
         -- strip
@@ -133,7 +131,7 @@ local function get_import(bufnr, statement, ts_node)
     end
   end
 
-  return { "import " .. statement }
+  return { "import " .. word }
 end
 
 ---@param bufnr integer

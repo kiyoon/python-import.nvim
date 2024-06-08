@@ -276,6 +276,10 @@ M.default_import_from = {
   WebDriver = "selenium.webdriver.remote.webdriver",
 }
 
+M.default_statement_after_imports = {
+  logger = { "import logging", "", "logger = logging.getLogger(__name__)" },
+}
+
 M.python_keywords = {
   "False",
   "None",
@@ -404,16 +408,17 @@ M.python_builtins = {
   "_",
 }
 
-M.import = {}
-M.is_import = {}
+M.import = {} ---@type string[]
+M.is_import = {} ---@type table<string, boolean>
 -- for _, v in ipairs(M.import) do
 --   M.is_import[v] = true
 -- end
 
-M.import_as = {}
-M.import_from = {}
+M.import_as = {} ---@type table<string, string>
+M.import_from = {} ---@type table<string, string>
+M.statement_after_imports = {} ---@type table<string, table<string>>
 
-M.ban_from_import = {}
+M.ban_from_import = {} ---@type table<string, boolean>
 for _, v in ipairs(M.python_keywords) do
   M.ban_from_import[v] = true
 end
