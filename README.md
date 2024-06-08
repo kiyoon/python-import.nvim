@@ -13,7 +13,7 @@ graph TD
     B --> C[Match found?]
     C -->|Yes| D[Insert import statement]
     C -->|No| E[Find imports in project]
-    E --> F<Match found?>
+    E --> F[Match found?]
     F -->|Yes| G[Select one and insert import statement]
     F -->|No| H[Insert import word]
 ```
