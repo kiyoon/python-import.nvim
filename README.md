@@ -7,6 +7,17 @@ https://github.com/kiyoon/python-import.nvim/assets/12980409/8a8f580f-16de-460c-
 The function receives the current word and treesitter node under the cursor.  
 Most will use the current word to find the import statement, but the treesitter node can be used to find the import statement more accurately. (e.g. `torch.utils.data.DataLoader` -> `import torch.utils.data`)
 
+```mermaid
+graph TD
+    A[Current word] --> B[Lookup table]
+    B --> C<Match?>
+    C -->|Yes| D[Insert import statement]
+    C -->|No| E[Find imports in project]
+    E --> F<Match found?>
+    F -->|Yes| G[Select one and insert import statement]
+    F -->|No| H[Insert `import <word>`]
+```
+
 1. Match lookup table with the current word
 2. If there is a match, insert the import statement
 3. If there is no match, rank all import statements by occurrence in the project and prompt the user to select one.
