@@ -7,7 +7,7 @@ M = {}
 ---@return integer?
 function M.find_line_after_module_docstring(bufnr, max_lines)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
-  max_lines = max_lines or 50
+  max_lines = max_lines or 200
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, max_lines, false)
   for i, line in ipairs(lines) do
@@ -38,7 +38,7 @@ end
 ---@param max_lines integer?
 function M.find_line_first_import(bufnr, max_lines)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
-  max_lines = max_lines or 50
+  max_lines = max_lines or 200
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, max_lines, false)
   for i, line in ipairs(lines) do
@@ -59,7 +59,7 @@ end
 ---@param max_lines integer?
 function M.find_line_last_import(bufnr, max_lines)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
-  max_lines = max_lines or 50
+  max_lines = max_lines or 200
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, max_lines, false)
   -- iterate backwards

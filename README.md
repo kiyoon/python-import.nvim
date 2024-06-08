@@ -108,22 +108,40 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
         -- Default behaviour for `logger` is `import logging`, ``, `logger = logging.getLogger(__name__)`.
         -- If you want to change it to `import my_custom_logger`, ``, `logger = my_custom_logger.get_logger()`,
         -- you can set `statement_after_imports = {logger = {"import my_custom_logger", "", "logger = my_custom_logger.get_logger()"}}` here.
-      extend_lookup_table = {
-        import = {
-          -- "tqdm",
+        extend_lookup_table = {
+          ---@type string[]
+          import = {
+            -- "tqdm",
+          },
+
+          ---@type table<string, string>
+          import_as = {
+            -- These are the default values. Here for demonstration.
+            -- np = "numpy",
+            -- pd = "pandas",
+          },
+
+          ---@type table<string, string>
+          import_from = {
+            -- tqdm = nil,
+            -- tqdm = "tqdm",
+          },
+
+          ---@type table<string, string[]>
+          statement_after_imports = {
+            -- logger = { "import my_custom_logger", "", "logger = my_custom_logger.get_logger()" },
+          },
         },
-        import_as = {
-          -- These are the default values. Here for demonstration.
-          -- np = "numpy",
-          -- pd = "pandas",
-        },
-        import_from = {
-          -- tqdm = nil,
-          -- tqdm = "tqdm",
-        },
-        statement_after_imports = {
-          -- logger = { "import my_custom_logger", "", "logger = my_custom_logger.get_logger()" },
-        },
+
+        ---Return nil to indicate no match is found and continue with the default lookup
+        ---Return a table to stop the lookup and use the returned table as the result
+        ---Return an empty table to stop the lookup. This is useful when you want to add to wherever you need to.
+        ---@type fun(bufnr: integer, word: string, ts_node: TSNode?): string[]?
+        custom_function = function(bufnr, word, ts_node)
+          -- if vim.endswith(word, "_DIR") then
+          --   return { "from my_module import " .. word }
+          -- end
+        end,
       },
     },
   },

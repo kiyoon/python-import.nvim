@@ -7,6 +7,7 @@ local lookup_table = require "python_import.lookup_table"
 local ts_utils = require "python_import.ts_utils"
 local health = require "python_import.health"
 local utils = require "python_import.utils"
+local config = require "python_import.config"
 
 M = {}
 
@@ -55,19 +56,13 @@ local function get_import(bufnr, word, ts_node)
     end
   end
 
-  if lookup_table.statement_after_imports[word] ~= nil then
-    return lookup_table.statement_after_imports[word]
+  local import_statements = config.opts.custom_function(bufnr, word, ts_node)
+  if import_statements ~= nil then
+    return import_statements
   end
 
-  -- extend from .. import *
-  if utils.get_cached_first_party_modules(bufnr) ~= nil then
-    local first_module = utils.get_cached_first_party_modules(bufnr)[1]
-    -- if statement ends with _DIR, import from the first module (from project import PROJECT_DIR)
-    if word:match "_DIR$" then
-      return { "from " .. first_module .. " import " .. word }
-    elseif word == "setup_logging" then
-      return { "from " .. first_module .. ".utils.log import setup_logging" }
-    end
+  if lookup_table.statement_after_imports[word] ~= nil then
+    return lookup_table.statement_after_imports[word]
   end
 
   if lookup_table.is_import[word] then
@@ -135,21 +130,34 @@ local function get_import(bufnr, word, ts_node)
 end
 
 ---@param bufnr integer
----@param module string
+---@param word string
 ---@param ts_node TSNode?
 ---@return integer?, string[]?
-local function add_import(bufnr, module, ts_node)
+local function add_import(bufnr, word, ts_node)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
   -- strip
-  module = module:match "^%s*(.*)%s*$"
-  if module == "" then
-    return nil
+  word = word:match "^%s*(.*)%s*$"
+  if word == "" then
+    return nil, nil
   end
-  if lookup_table.ban_from_import[module] then
-    return nil
+  if lookup_table.ban_from_import[word] then
+    return nil, nil
   end
 
-  local import_statements = nil
+  local import_statements = get_import(bufnr, word, ts_node)
+  if import_statements == nil then
+    notify("No import statement found or it was aborted, for `" .. word .. "`", "warn", {
+      title = "Python auto import",
+      on_open = function(win)
+        local buf = vim.api.nvim_win_get_buf(win)
+        vim.bo[buf].filetype = "markdown"
+      end,
+    })
+    return nil, nil
+  elseif #import_statements == 0 then
+    return nil, nil
+  end
+
   -- prefer to add after last import
   local line_number = utils.find_line_last_import()
   if line_number == nil then
@@ -160,18 +168,6 @@ local function add_import(bufnr, module, ts_node)
     end
   else
     line_number = line_number + 1 -- add after last import
-  end
-
-  import_statements = get_import(bufnr, module, ts_node)
-  if import_statements == nil then
-    notify("No import statement found or it was aborted, for `" .. module .. "`", "warn", {
-      title = "Python auto import",
-      on_open = function(win)
-        local buf = vim.api.nvim_win_get_buf(win)
-        vim.bo[buf].filetype = "markdown"
-      end,
-    })
-    return nil, nil
   end
 
   vim.api.nvim_buf_set_lines(0, line_number - 1, line_number - 1, false, import_statements)
