@@ -136,4 +136,5 @@ python-import ~
 - OK `rg` is installed
 - OK `fd` is installed
 - OK `python-import` is installed
+- OK python-import v0.1.0+14.g64ef2f2
 ```
