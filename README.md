@@ -98,23 +98,26 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
         ft = "python",
       },
     },
-    config = function()
-      require("python_import").setup {
-        extend_lookup_table = {
-          import = {
-            -- "pickle",
-          },
-          import_as = {
-            -- np = "numpy",
-            -- pd = "pandas",
-          },
-          import_from = {
-            -- tqdm = "tqdm.auto",
-            -- nn = "torch",
-          },
+    opts = {
+      -- Example 1:
+      -- Default behaviour for `tqdm` is `from tqdm.auto import tqdm`.
+      -- If you want to change it to `import tqdm`, you can set `import = {"tqdm"}` and `import_from = {tqdm = nil}` here.
+      -- If you want to change it to `from tqdm import tqdm`, you can set `import_from = {tqdm = "tqdm"}` here.
+      extend_lookup_table = {
+        import = {
+          -- "tqdm",
         },
-      }
-    end,
+        import_as = {
+          -- These are the default values. Here for demonstration.
+          -- np = "numpy",
+          -- pd = "pandas",
+        },
+        import_from = {
+          -- tqdm = nil,
+          -- tqdm = "tqdm",
+        },
+      },
+    },
   },
   "rcarriga/nvim-notify",   -- optional
 ```
