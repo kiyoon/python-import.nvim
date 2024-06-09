@@ -1,3 +1,8 @@
+local status, notify = pcall(require, "notify")
+if not status then
+  notify = function(message, level, opts) end
+end
+
 M = {}
 
 ---Return line after the first comments and docstring.
@@ -161,6 +166,32 @@ function M.get_cached_first_party_modules(bufnr)
   end
 
   return buf_to_first_party_modules[bufnr]
+end
+
+function M.notify_diff_pre(bufnr)
+  bufnr = bufnr or vim.api.nvim_get_current_buf()
+  local prev_buf = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local prev_buf_str = table.concat(prev_buf, "\n")
+  return prev_buf_str
+end
+
+function M.notify_diff(bufnr, prev_buf_str)
+  local new_buf = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  local new_buf_str = table.concat(new_buf, "\n")
+  local diff = vim.diff(prev_buf_str, new_buf_str, { ctxlen = 3 })
+  -- strip last empty line
+  -- diff = vim.split(diff, "\n")
+  -- table.remove(diff, #diff)
+  -- diff = table.concat(diff, "\n")
+  diff = diff:gsub("\n$", "")
+
+  notify(diff, "info", {
+    title = "python-import",
+    on_open = function(win)
+      local buf = vim.api.nvim_win_get_buf(win)
+      vim.bo[buf].filetype = "diff"
+    end,
+  })
 end
 
 return M

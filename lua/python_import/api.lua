@@ -131,8 +131,10 @@ local function get_import(winnr, word, ts_node)
 
   -- Last resort: use pyright LSP completion.
   -- This does not work well for me, so I put it last.
+  local prev_buf_str = utils.notify_diff_pre(bufnr)
   local resolved = pyright.import(winnr)
   if resolved then
+    utils.notify_diff(bufnr, prev_buf_str)
     return {} -- no further adding lines to buffer needed
   end
 
