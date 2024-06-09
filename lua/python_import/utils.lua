@@ -117,11 +117,22 @@ end
 
 ---Get current word in a buffer
 ---It is aware of the insert mode (move column by -1 if the mode is insert).
+---@param winnr integer?
 ---@return string
-function M.get_current_word()
-  local line = vim.fn.getline "."
-  local col = vim.fn.col "."
-  local mode = vim.fn.mode "."
+function M.get_current_word(winnr)
+  winnr = winnr or vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_win_get_buf(winnr)
+
+  -- local line = vim.fn.getline "."
+  -- local col = vim.fn.col "."
+  -- local mode = vim.fn.mode "."
+  local line, col, mode
+  vim.api.nvim_win_call(winnr, function()
+    line = vim.fn.getline "."
+    col = vim.fn.col "."
+    mode = vim.fn.mode "."
+  end)
+
   if mode == "i" then
     -- insert mode has cursor one char to the right
     col = col - 1

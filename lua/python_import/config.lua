@@ -29,8 +29,8 @@ M.default_opts = {
   ---Return nil to indicate no match is found and continue with the default lookup
   ---Return a table to stop the lookup and use the returned table as the result
   ---Return an empty table to stop the lookup. This is useful when you want to add to wherever you need to.
-  ---@type fun(bufnr: integer, word: string, ts_node: TSNode?): string[]?
-  custom_function = function(bufnr, word, ts_node)
+  ---@type fun(winnr: integer, word: string, ts_node: TSNode?): string[]?
+  custom_function = function(winnr, word, ts_node)
     -- if vim.endswith(word, "_DIR") then
     --   return { "from my_module import " .. word }
     -- end

@@ -8,15 +8,18 @@ local ts_utils = require "python_import.ts_utils"
 local health = require "python_import.health"
 local utils = require "python_import.utils"
 local config = require "python_import.config"
+local pyright = require "python_import.pyright"
 
 M = {}
 
----@param bufnr integer
+---@param winnr integer
 ---@param word string
 ---@param ts_node TSNode?
 ---@return string[]?
-local function get_import(bufnr, word, ts_node)
-  bufnr = bufnr or vim.api.nvim_get_current_buf()
+local function get_import(winnr, word, ts_node)
+  winnr = winnr or vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_win_get_buf(winnr)
+
   if word == nil then
     return nil
   end
@@ -56,7 +59,7 @@ local function get_import(bufnr, word, ts_node)
     end
   end
 
-  local import_statements = config.opts.custom_function(bufnr, word, ts_node)
+  local import_statements = config.opts.custom_function(winnr, word, ts_node)
   if import_statements ~= nil then
     return import_statements
   end
@@ -126,15 +129,24 @@ local function get_import(bufnr, word, ts_node)
     end
   end
 
+  -- Last resort: use pyright LSP completion.
+  -- This does not work well for me, so I put it last.
+  local resolved = pyright.import(winnr)
+  if resolved then
+    return {} -- no further adding lines to buffer needed
+  end
+
   return { "import " .. word }
 end
 
----@param bufnr integer
+---@param winnr integer
 ---@param word string
 ---@param ts_node TSNode?
 ---@return integer?, string[]?
-local function add_import(bufnr, word, ts_node)
-  bufnr = bufnr or vim.api.nvim_get_current_buf()
+local function add_import(winnr, word, ts_node)
+  winnr = winnr or vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_win_get_buf(winnr)
+
   -- strip
   word = word:match "^%s*(.*)%s*$"
   if word == "" then
@@ -144,7 +156,7 @@ local function add_import(bufnr, word, ts_node)
     return nil, nil
   end
 
-  local import_statements = get_import(bufnr, word, ts_node)
+  local import_statements = get_import(winnr, word, ts_node)
   if import_statements == nil then
     notify("No import statement found or it was aborted, for `" .. word .. "`", "warn", {
       title = "Python auto import",
@@ -159,10 +171,10 @@ local function add_import(bufnr, word, ts_node)
   end
 
   -- prefer to add after last import
-  local line_number = utils.find_line_last_import()
+  local line_number = utils.find_line_last_import(bufnr)
   if line_number == nil then
     -- if no import, add to first empty line
-    line_number = utils.find_line_after_module_docstring()
+    line_number = utils.find_line_after_module_docstring(bufnr)
     if line_number == nil then
       line_number = 1
     end
@@ -170,7 +182,7 @@ local function add_import(bufnr, word, ts_node)
     line_number = line_number + 1 -- add after last import
   end
 
-  vim.api.nvim_buf_set_lines(0, line_number - 1, line_number - 1, false, import_statements)
+  vim.api.nvim_buf_set_lines(bufnr, line_number - 1, line_number - 1, false, import_statements)
 
   return line_number, import_statements
 end
@@ -178,43 +190,59 @@ end
 ---@param winnr integer?
 local function add_import_current_word(winnr)
   winnr = winnr or vim.api.nvim_get_current_win()
-  local bufnr = vim.api.nvim_win_get_buf(winnr)
-
-  local module = utils.get_current_word()
+  -- local bufnr = vim.api.nvim_win_get_buf(winnr)
+  local module = utils.get_current_word(winnr)
   local node = ts_utils.get_node_at_cursor(winnr)
   -- local module = vim.fn.expand "<cword>"
-  return add_import(bufnr, module, node)
+  return add_import(winnr, module, node)
 end
 
-local function add_import_current_selection()
-  vim.cmd [[normal! "sy]]
-  local node = ts_utils.get_node_at_cursor()
-  return add_import(0, vim.fn.getreg "s", node)
+---@param winnr integer?
+local function add_import_current_selection(winnr)
+  winnr = winnr or vim.api.nvim_get_current_win()
+
+  vim.api.nvim_win_call(winnr, function()
+    vim.cmd [[normal! "sy]]
+  end)
+
+  local node = ts_utils.get_node_at_cursor(winnr)
+  return add_import(winnr, vim.fn.getreg "s", node)
 end
 
 -- vim.keymap.set("n", "<leader>i",
 -- , { silent = true, desc = "Add python import and move cursor" })
-M.add_import_current_word_and_move_cursor = function()
-  local line_number, _ = add_import_current_word()
+---@param winnr integer?
+M.add_import_current_word_and_move_cursor = function(winnr)
+  winnr = winnr or vim.api.nvim_get_current_win()
+  local line_number, _ = add_import_current_word(winnr)
   if line_number ~= nil then
-    vim.cmd([[normal! ]] .. line_number .. [[G0]])
+    vim.api.nvim_win_call(winnr, function()
+      vim.cmd([[normal! ]] .. line_number .. [[G0]])
+    end)
   end
 end
 
 -- vim.keymap.set("x", "<leader>i",
 -- , { silent = true, desc = "Add python import and move cursor" })
-M.add_import_current_selection_and_move_cursor = function()
-  local line_number, _ = add_import_current_selection()
+---@param winnr integer?
+M.add_import_current_selection_and_move_cursor = function(winnr)
+  winnr = winnr or vim.api.nvim_get_current_win()
+  local line_number, _ = add_import_current_selection(winnr)
   if line_number ~= nil then
-    vim.cmd([[normal! ]] .. line_number .. [[G0]])
+    vim.api.nvim_win_call(winnr, function()
+      vim.cmd([[normal! ]] .. line_number .. [[G0]])
+    end)
   end
 end
 
 -- vim.keymap.set({ "n", "i" }, "<M-CR>",
 -- , { silent = true, desc = "Add python import" })
 
-M.add_import_current_word_and_notify = function()
-  local line_number, import_statements = add_import_current_word()
+---@param winnr integer?
+M.add_import_current_word_and_notify = function(winnr)
+  winnr = winnr or vim.api.nvim_get_current_win()
+
+  local line_number, import_statements = add_import_current_word(winnr)
   if line_number ~= nil then
     notify(import_statements, "info", {
       title = "Python import added at line " .. line_number,
@@ -228,8 +256,11 @@ end
 
 -- vim.keymap.set("x", "<M-CR>",
 -- , { silent = true, desc = "Add python import" })
-M.add_import_current_selection_and_notify = function()
-  local line_number, import_statements = add_import_current_selection()
+---@param winnr integer?
+M.add_import_current_selection_and_notify = function(winnr)
+  winnr = winnr or vim.api.nvim_get_current_win()
+
+  local line_number, import_statements = add_import_current_selection(winnr)
   if line_number ~= nil then
     notify(import_statements, "info", {
       title = "Python import added at line " .. line_number,
@@ -243,19 +274,23 @@ end
 
 -- vim.keymap.set({ "n" }, "<space>tr",
 -- , { silent = true, desc = "Add rich traceback install" })
-M.add_rich_traceback = function()
+---@param winnr integer?
+M.add_rich_traceback = function(winnr)
+  winnr = winnr or vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_win_get_buf(winnr)
+
   local statements = { "import rich.traceback", "", "rich.traceback.install(show_locals=True)", "" }
 
-  local line_number = utils.find_line_first_import() ---@type integer | nil
+  local line_number = utils.find_line_first_import(bufnr) ---@type integer | nil
 
   if line_number == nil then
-    line_number = utils.find_line_after_module_docstring()
+    line_number = utils.find_line_after_module_docstring(bufnr)
     if line_number == nil then
       line_number = 1
     end
   else
     -- first import found. Check if rich traceback already installed
-    local lines = vim.api.nvim_buf_get_lines(0, line_number - 1, line_number - 1 + 3, false)
+    local lines = vim.api.nvim_buf_get_lines(bufnr, line_number - 1, line_number - 1 + 3, false)
     if lines[1] == statements[1] and lines[2] == statements[2] and lines[3] == statements[3] then
       notify("Rich traceback already installed", "info", {
         title = "Python auto import",
@@ -264,7 +299,7 @@ M.add_rich_traceback = function()
     end
   end
 
-  vim.api.nvim_buf_set_lines(0, line_number - 1, line_number - 1, false, statements)
+  vim.api.nvim_buf_set_lines(bufnr, line_number - 1, line_number - 1, false, statements)
   notify(statements, "info", {
     title = "Rich traceback install added at line " .. line_number,
     on_open = function(win)
