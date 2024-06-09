@@ -87,10 +87,10 @@ local function get_import(bufnr, word, ts_node)
   if requirements_installed then
     local project_root = vim.fs.root(0, { ".git", "pyproject.toml" })
     if project_root ~= nil then
-      local find_import_outputs =
-        vim.api.nvim_exec([[w !python-import count ']] .. project_root .. [[' ']] .. word .. [[']], { output = true })
+      local response = vim.system({ "python-import", "count", project_root, word }, { text = true }):wait()
+      if response.code == 0 then
+        local find_import_outputs = response.stdout:gsub("\n$", "")
 
-      if find_import_outputs ~= nil then
         -- strip
         find_import_outputs = find_import_outputs:gsub("^\n", "")
         -- find_import_outputs = find_import_outputs:match "^%s*(.*)%s*$"
