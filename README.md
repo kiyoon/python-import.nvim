@@ -26,11 +26,6 @@ graph TD
     I -->|No| K["Insert `import &lt;word&gt;`"]
 ```
 
-1. Match lookup table with the current word
-2. If there is a match, insert the import statement
-3. If there is no match, 
-4. If no match in the project either, just `import <word>`.
-
 This plugin doesn't detect duplicated imports. Use `ruff` to sort imports.
 
 ### Lookup table examples
