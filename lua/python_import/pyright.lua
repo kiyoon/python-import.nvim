@@ -197,7 +197,7 @@ local lsp_completion = function(diagnostic)
   end
   local server = M.get_server(diagnostic)
   if server == nil then
-    vim.notify "cannot find server implemantion for lsp import"
+    -- vim.notify "cannot find server implemantion for lsp import"
     return M.ImportStatus.ERROR
   end
   local params = {
