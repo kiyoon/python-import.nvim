@@ -194,4 +194,31 @@ function M.notify_diff(bufnr, prev_buf_str)
   })
 end
 
+---Modified from nvim-dap
+---Display indices along with the items
+---About coroutine, see https://www.reddit.com/r/neovim/comments/vwiqy2/is_it_possible_to_wait_for_vimuiselect_to_return/
+---@param items string[]
+---@param prompt string
+---@param label_fn fun(item: string): string
+function M.pick_one_with_index(items, prompt, label_fn)
+  local co = assert(coroutine.running(), "You must call this function from a coroutine, not the main thread")
+  local cb = vim.schedule_wrap(function(item, idx)
+    coroutine.resume(co, idx)
+  end)
+
+  local items_with_index = {}
+  for i, item in ipairs(items) do
+    items_with_index[i] = string.format("%d: %s", i, label_fn(item))
+  end
+
+  vim.ui.select(items_with_index, {
+    prompt = prompt,
+    format_item = function(item)
+      return item
+    end,
+    telescope = require("telescope.themes").get_ivy(), -- option in dressing.nvim. Make telescope use full width.
+  }, cb)
+  return coroutine.yield()
+end
+
 return M

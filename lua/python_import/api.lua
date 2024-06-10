@@ -109,20 +109,37 @@ local function get_import(winnr, word, ts_node)
             return import_statement
           end
 
-          local outputs_to_inputlist = {}
-          for i, v in ipairs(find_import_outputs_split) do
-            local count = tonumber(v:sub(1, 5))
-            local import_statement = v:sub(7) -- remove the count
+          -- Sync version
+          --
+          -- local outputs_to_inputlist = {}
+          -- for i, v in ipairs(find_import_outputs_split) do
+          --   local count = tonumber(v:sub(1, 5))
+          --   local import_statement = v:sub(7) -- remove the count
+          --
+          --   outputs_to_inputlist[i] = string.format("%d. count %d: %s", i, count, import_statement)
+          -- end
+          --
+          -- local choice = vim.fn.inputlist(outputs_to_inputlist)
+          -- if choice == 0 then
+          --   return nil
+          -- end
 
-            outputs_to_inputlist[i] = string.format("%d. count %d: %s", i, count, import_statement)
+          local format_output = function(item)
+            local count = tonumber(item:sub(1, 5))
+            local import_statement = item:sub(7) -- remove the count
+            return string.format("%s (%d occurrences found)", import_statement, count)
           end
 
-          local choice = vim.fn.inputlist(outputs_to_inputlist)
-          if choice == 0 then
-            return nil
+          local choice_idx =
+            utils.pick_one_with_index(find_import_outputs_split, "Select import for " .. word, format_output)
+
+          if choice_idx == nil then
+            -- user cancelled
+            -- we don't want to continue further with the next strategy
+            return {}
           end
 
-          local import_statement = find_import_outputs_split[choice]:sub(7) -- remove the count
+          local import_statement = find_import_outputs_split[choice_idx]:sub(7) -- remove the count
           return { import_statement }
         end
       end
@@ -132,8 +149,11 @@ local function get_import(winnr, word, ts_node)
   -- Last resort: use pyright LSP completion.
   -- This does not work well for me, so I put it last.
   local prev_buf_str = utils.notify_diff_pre(bufnr)
-  local resolved = pyright.import(winnr)
-  if resolved then
+  local import_status = pyright.import(winnr)
+  if import_status == pyright.ImportStatus.USER_ABORT then
+    return {} -- no further adding lines to buffer needed
+  end
+  if import_status == pyright.ImportStatus.RESOLVED_IMPORT then
     utils.notify_diff(bufnr, prev_buf_str)
     return {} -- no further adding lines to buffer needed
   end
@@ -196,7 +216,9 @@ local function add_import_current_word(winnr)
   local module = utils.get_current_word(winnr)
   local node = ts_utils.get_node_at_cursor(winnr)
   -- local module = vim.fn.expand "<cword>"
-  return add_import(winnr, module, node)
+  coroutine.resume(coroutine.create(function()
+    return add_import(winnr, module, node)
+  end))
 end
 
 ---@param winnr integer?
@@ -208,7 +230,9 @@ local function add_import_current_selection(winnr)
   end)
 
   local node = ts_utils.get_node_at_cursor(winnr)
-  return add_import(winnr, vim.fn.getreg "s", node)
+  coroutine.resume(coroutine.create(function()
+    return add_import(winnr, vim.fn.getreg "s", node)
+  end))
 end
 
 -- vim.keymap.set("n", "<leader>i",
@@ -216,12 +240,15 @@ end
 ---@param winnr integer?
 M.add_import_current_word_and_move_cursor = function(winnr)
   winnr = winnr or vim.api.nvim_get_current_win()
-  local line_number, _ = add_import_current_word(winnr)
-  if line_number ~= nil then
-    vim.api.nvim_win_call(winnr, function()
-      vim.cmd([[normal! ]] .. line_number .. [[G0]])
-    end)
-  end
+
+  coroutine.resume(coroutine.create(function()
+    local line_number, _ = add_import_current_word(winnr)
+    if line_number ~= nil then
+      vim.api.nvim_win_call(winnr, function()
+        vim.cmd([[normal! ]] .. line_number .. [[G0]])
+      end)
+    end
+  end))
 end
 
 -- vim.keymap.set("x", "<leader>i",
@@ -229,12 +256,15 @@ end
 ---@param winnr integer?
 M.add_import_current_selection_and_move_cursor = function(winnr)
   winnr = winnr or vim.api.nvim_get_current_win()
-  local line_number, _ = add_import_current_selection(winnr)
-  if line_number ~= nil then
-    vim.api.nvim_win_call(winnr, function()
-      vim.cmd([[normal! ]] .. line_number .. [[G0]])
-    end)
-  end
+
+  coroutine.resume(coroutine.create(function()
+    local line_number, _ = add_import_current_selection(winnr)
+    if line_number ~= nil then
+      vim.api.nvim_win_call(winnr, function()
+        vim.cmd([[normal! ]] .. line_number .. [[G0]])
+      end)
+    end
+  end))
 end
 
 -- vim.keymap.set({ "n", "i" }, "<M-CR>",
@@ -244,16 +274,18 @@ end
 M.add_import_current_word_and_notify = function(winnr)
   winnr = winnr or vim.api.nvim_get_current_win()
 
-  local line_number, import_statements = add_import_current_word(winnr)
-  if line_number ~= nil then
-    notify(import_statements, "info", {
-      title = "Python import added at line " .. line_number,
-      on_open = function(win)
-        local buf = vim.api.nvim_win_get_buf(win)
-        vim.bo[buf].filetype = "python"
-      end,
-    })
-  end
+  coroutine.resume(coroutine.create(function()
+    local line_number, import_statements = add_import_current_word(winnr)
+    if line_number ~= nil then
+      notify(import_statements, "info", {
+        title = "Python import added at line " .. line_number,
+        on_open = function(win)
+          local buf = vim.api.nvim_win_get_buf(win)
+          vim.bo[buf].filetype = "python"
+        end,
+      })
+    end
+  end))
 end
 
 -- vim.keymap.set("x", "<M-CR>",
@@ -262,16 +294,18 @@ end
 M.add_import_current_selection_and_notify = function(winnr)
   winnr = winnr or vim.api.nvim_get_current_win()
 
-  local line_number, import_statements = add_import_current_selection(winnr)
-  if line_number ~= nil then
-    notify(import_statements, "info", {
-      title = "Python import added at line " .. line_number,
-      on_open = function(win)
-        local buf = vim.api.nvim_win_get_buf(win)
-        vim.bo[buf].filetype = "python"
-      end,
-    })
-  end
+  coroutine.resume(coroutine.create(function()
+    local line_number, import_statements = add_import_current_selection(winnr)
+    if line_number ~= nil then
+      notify(import_statements, "info", {
+        title = "Python import added at line " .. line_number,
+        on_open = function(win)
+          local buf = vim.api.nvim_win_get_buf(win)
+          vim.bo[buf].filetype = "python"
+        end,
+      })
+    end
+  end))
 end
 
 -- vim.keymap.set({ "n" }, "<space>tr",
