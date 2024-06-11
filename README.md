@@ -153,6 +153,22 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
   "rcarriga/nvim-notify",   -- optional
 ```
 
+### Faster building with `uv`
+
+`pipx` is easy to configure, but `uv` is much faster. Make sure to install uv and change the build script as follows:
+
+With lazy.nvim:
+
+```lua
+  {
+    "kiyoon/python-import.nvim",
+    build = "bash scripts/build_with_uv.sh ~/.virtualenvs/python-import",
+    -- Other configurations ...
+  },
+```
+
+This simply creates a virtual environment in `~/.virtualenvs/python-import` and installs the cli there with `uv pip install .`. Then it sym-links the binary to `~/.local/bin/python-import`.
+
 ###  🏋️ Health check
 
 Run `:checkhealth python_import` and see if python-import.nvim is installed correctly.  
