@@ -35,7 +35,10 @@ logger = logging.getLogger(__name__)
 
 Most will use the current word to find the import statement, but the treesitter node can be used to find the import statement more accurately. (e.g. `torch.utils.data.DataLoader` -> `import torch.utils.data`)
 
-NOTE: This is work-in-progress and not yet ready for public. There isn't much customisation options and the behaviour can change rapidly.
+> [!WARNING]
+> This is work in progress and not yet ready for public.
+> There isn't much customisation options (e.g. how to locate the import place)
+> and the behaviour and build/configuration instructions change rapidly.
 
 ## 🛠️ Installation
 
@@ -187,7 +190,7 @@ python-import ~
 ```
 
 ## TODO
-- [ ] Add tests
+- [ ] Add more tests
 - [ ] Command to add imports in TYPE_CHECKING
 - [ ] Command to add lazy imports in methods
 - [ ] Command to add imports in jupytext cell
