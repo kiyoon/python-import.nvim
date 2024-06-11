@@ -158,7 +158,7 @@ Most will use the current word to find the import statement, but the treesitter 
 
 ### Faster building with `uv`
 
-`pipx` is easy to configure, but `uv` is much faster. Make sure to install uv and change the build script as follows:
+`pipx` is easy to configure, but `uv` is much faster. Make sure to install uv >= 0.2 and change the build script as follows:
 
 With lazy.nvim:
 
