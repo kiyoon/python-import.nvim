@@ -42,7 +42,7 @@ NOTE: This is work-in-progress and not yet ready for public. There isn't much cu
 ### Requirements
 
 - 💻 Neovim >= 0.10
-- pipx (or any other way to install `python-import` cli in PATH)
+- pipx or uv (or any other way to install `python-import` cli in PATH)
 - ripgrep (`brew install ripgrep` or `cargo install ripgrep`)
 - fd (`brew install fd`, `cargo install fd-find` or `npm install -g fd-find`)
 

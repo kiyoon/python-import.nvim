@@ -52,8 +52,8 @@ def get_config() -> VersioneerConfig:
     cfg.VCS = "git"
     cfg.style = "pep440"
     cfg.tag_prefix = "v"
-    cfg.parentdir_prefix = "mlproject-"
-    cfg.versionfile_source = "src/mlproject/_version.py"
+    cfg.parentdir_prefix = "python-import-"
+    cfg.versionfile_source = "src/python_import/_version.py"
     cfg.verbose = False
     return cfg
 

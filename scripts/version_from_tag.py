@@ -11,13 +11,11 @@ from __future__ import annotations
 
 import errno
 import functools
-import json
 import os
 import re
 import subprocess
 import sys
 from collections.abc import Callable
-from pathlib import Path
 from typing import Any
 
 
