@@ -44,6 +44,7 @@ M.default_import = {
 M.default_import_as = {
   mp = "multiprocessing",
   np = "numpy",
+  npt = "numpy.typing",
   pd = "pandas",
   pl = "polars",
   plt = "matplotlib.pyplot",
@@ -274,6 +275,10 @@ M.default_import_from = {
   Traceback = "rich.traceback",
   Theme = "rich.theme",
   WebDriver = "selenium.webdriver.remote.webdriver",
+
+  NDArray = "numpy.typing",
+  ArrayLike = "numpy.typing",
+  DTypeLike = "numpy.typing",
 }
 
 M.default_statement_after_imports = {
