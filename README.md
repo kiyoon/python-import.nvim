@@ -12,7 +12,7 @@ https://github.com/kiyoon/python-import.nvim/assets/12980409/8a8f580f-16de-460c-
 
 It matches with:
 
-1. Lookup table
+1. [Pre-defined lookup tables](https://github.com/kiyoon/python-import.nvim/blob/master/lua/python_import/lookup_table.lua)
 2. Existing imports in the project (implemented in Python: `python-import` cli)
     - It finds the imports in the project and shows a list of them to choose from.
 3. pyright/basedpyright LSP completion
@@ -33,12 +33,13 @@ import logging
 logger = logging.getLogger(__name__)
 ```
 
-Most will use the current word to find the import statement, but the treesitter node can be used to find the import statement more accurately. (e.g. `torch.utils.data.DataLoader` -> `import torch.utils.data`)
+Most will use the current word to find the import statement, but the treesitter node can be used to find the import statement more accurately. (e.g. `class SomeDataset(torch.utils.data.DataLoader)` -> `import torch.utils.data`)
 
 > [!WARNING]
-> This is work in progress and not yet ready for public.
-> There isn't much customisation options (e.g. how to locate the import place)
+> This work-in-progress plugin is not yet ready for the public.
+> There aren't many customisation options (e.g. how to locate the import place)
 > and the behaviour and build/configuration instructions change rapidly.
+> If you don't want breaking changes, please fix the version of this plugin.
 
 ## 🛠️ Installation
 
@@ -194,5 +195,6 @@ python-import ~
 - [ ] Command to add imports in TYPE_CHECKING
 - [ ] Command to add lazy imports in methods
 - [ ] Command to add imports in jupytext cell
+- [ ] Search in ipynb files
 - [ ] VSCode-neovim integration (use `vim.ui.select` for vscode UI support. However, this complicates stuff because it runs async)
     - Currently, if you open the vscode-neovim output terminal, it is quite usable. The notification works as well. LSP doesn't work yet.
