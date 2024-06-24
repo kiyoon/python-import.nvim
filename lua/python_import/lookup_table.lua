@@ -275,6 +275,7 @@ M.default_import_from = {
   Traceback = "rich.traceback",
   Theme = "rich.theme",
   WebDriver = "selenium.webdriver.remote.webdriver",
+  ic = "icecream",
 
   NDArray = "numpy.typing",
   ArrayLike = "numpy.typing",
