@@ -31,6 +31,7 @@ M.default_import = {
   "typing",
   "typing_extensions",
   "setuptools",
+  "xml",
 
   -- third-party
   "PIL",
@@ -254,9 +255,9 @@ M.default_import_from = {
   Text = "typing",
   TypeAlias = "typing",
   TypeGuard = "typing",
-  override = "typing",
   overload = "typing",
 
+  override = "typing_extensions",
   deprecated = "typing_extensions",
 
   setup = "setuptools",
@@ -276,6 +277,7 @@ M.default_import_from = {
   Theme = "rich.theme",
   WebDriver = "selenium.webdriver.remote.webdriver",
   ic = "icecream",
+  sql = "psycopg",
 
   NDArray = "numpy.typing",
   ArrayLike = "numpy.typing",
