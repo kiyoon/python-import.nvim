@@ -84,6 +84,7 @@ M.default_import_from = {
   namedtuple = "collections",
   defaultdict = "collections",
 
+  Callable = "collections.abc",
   Iterable = "collections.abc",
   Sequence = "collections.abc",
 
@@ -186,7 +187,6 @@ M.default_import_from = {
   Annotation = "typing",
   Any = "typing", -- when you don't know the type
   Incomplete = "typing", -- alias for Any, but indicates that the type hint should be completed later
-  Callable = "typing",
   ClassVar = "typing",
   Concatenate = "typing",
   Final = "typing",
