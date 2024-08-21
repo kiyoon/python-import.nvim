@@ -2,9 +2,11 @@
 
 |  |  |
 |--|--|
-|[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![StyLua](https://img.shields.io/badge/StyLua-teal)](https://github.com/JohnnyMorganz/StyLua)|[![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Style%20checking/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions)|
-| [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) | [![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Linting/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions) |
-| [![pytest](https://img.shields.io/badge/pytest-black)](https://github.com/pytest-dev/pytest) [![doctest](https://img.shields.io/badge/doctest-black)](https://docs.python.org/3/library/doctest.html) | [![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Tests/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions) |
+|[![Ruff](https://img.shields.io/badge/Ruff-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://github.com/astral-sh/ruff) |[![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Style%20checking/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions)|
+| [![Ruff](https://img.shields.io/badge/Ruff-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://github.com/astral-sh/ruff) | [![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Linting/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions) |
+| [![pytest](https://img.shields.io/badge/pytest-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://github.com/pytest-dev/pytest) [![doctest](https://img.shields.io/badge/doctest-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://docs.python.org/3/library/doctest.html) | [![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Tests/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions) |
+| [![uv](https://img.shields.io/badge/uv-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://github.com/astral-sh/uv) | [![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Check%20pip%20compile%20sync/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions) |
+|[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff) [![StyLua](https://img.shields.io/badge/lua-%232C2D72.svg?style=for-the-badge&logo=lua&logoColor=white)](https://github.com/JohnnyMorganz/StyLua) | [![Actions status](https://github.com/kiyoon/python-import.nvim/workflows/Style%20checking/badge.svg)](https://github.com/kiyoon/python-import.nvim/actions) |
 
 A simple tool that auto-inserts import statements.
 
