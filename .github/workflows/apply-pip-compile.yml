@@ -8,19 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: deargen/workflows/actions/apply-pip-compile@master
         with:
-          python-version-file: pyproject.toml
-      - name: Install uv
-        run: |
-          pip3 install uv
-      - name: Run uv pip compile and push
-        run: |
-          set +e  # Do not exit shell on failure
-          bash scripts/compile_requirements.sh
-          git config user.name github-actions[bot]
-          git config user.email github-actions[bot]@users.noreply.github.com
-          git add .
-          git commit -m "build: update requirements using uv pip compile [skip ci]"
-          git push
+          pyproject-toml-file: pyproject.toml
+          requirements-in-dir: deps
+          requirements-out-dir: deps/lock
+          python-platforms: x86_64-manylinux_2_28,aarch64-apple-darwin,x86_64-apple-darwin,x86_64-pc-windows-msvc
