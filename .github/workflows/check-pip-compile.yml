@@ -1,6 +1,15 @@
 name: Check pip compile sync
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
 
 jobs:
   check-pip-compile:
@@ -8,42 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: |
-          echo "python_version=$(python3 scripts/get_python_version.py)" >> "$GITHUB_OUTPUT"
-          pip3 install --user uv
-        id: get-python-version
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: deargen/workflows/actions/check-pip-compile@master
         with:
-          python-version: ${{ steps.get-python-version.outputs.python_version }}
-      - name: Install uv
-        run: |
-          pip3 install uv
-      - name: Generate lockfile and print diff
-        run: |
-          set +e  # Do not exit shell on failure
-
-          out=$(bash scripts/compile_requirements.sh 2> _stderr.txt)
-          exit_code=$?
-          err=$(<_stderr.txt)
-
-          if [[ -n "$out" ]]; then
-            # Display the raw output in the step
-            echo "${out}"
-            # Display the Markdown output in the job summary
-            { echo "\`\`\`"; echo "${out}"; echo "\`\`\`"; } >> "$GITHUB_STEP_SUMMARY"
-          fi
-          if [[ -n "$err" ]]; then
-            echo "${err}"
-            { echo "\`\`\`"; echo "${err}"; echo "\`\`\`"; } >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-          if [[ $exit_code -eq 0 ]]; then
-            # When the script fails, there are changes in requirements that are not compiled yet.
-            # Print the suggested changes.
-            { echo "\`\`\`diff"; git diff; echo "\`\`\`"; } >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
-
-          # When the script fails, it means it does not have anything to compile.
-          exit 0
+          pyproject-toml-file: pyproject.toml
+          requirements-in-dir: deps
+          requirements-out-dir: deps/lock
+          python-platforms: x86_64-manylinux_2_28,aarch64-apple-darwin,x86_64-apple-darwin,x86_64-pc-windows-msvc

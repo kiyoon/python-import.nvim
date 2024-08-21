@@ -31,6 +31,7 @@ M.default_import = {
   "typing",
   "typing_extensions",
   "setuptools",
+  "xml",
 
   -- third-party
   "PIL",
@@ -83,6 +84,7 @@ M.default_import_from = {
   namedtuple = "collections",
   defaultdict = "collections",
 
+  Callable = "collections.abc",
   Iterable = "collections.abc",
   Sequence = "collections.abc",
 
@@ -185,7 +187,6 @@ M.default_import_from = {
   Annotation = "typing",
   Any = "typing", -- when you don't know the type
   Incomplete = "typing", -- alias for Any, but indicates that the type hint should be completed later
-  Callable = "typing",
   ClassVar = "typing",
   Concatenate = "typing",
   Final = "typing",
@@ -254,9 +255,9 @@ M.default_import_from = {
   Text = "typing",
   TypeAlias = "typing",
   TypeGuard = "typing",
-  override = "typing",
   overload = "typing",
 
+  override = "typing_extensions",
   deprecated = "typing_extensions",
 
   setup = "setuptools",
@@ -275,6 +276,8 @@ M.default_import_from = {
   Traceback = "rich.traceback",
   Theme = "rich.theme",
   WebDriver = "selenium.webdriver.remote.webdriver",
+  ic = "icecream",
+  sql = "psycopg",
 
   NDArray = "numpy.typing",
   ArrayLike = "numpy.typing",

@@ -130,7 +130,7 @@ local function get_import(winnr, word, ts_node)
   local prev_buf_str = utils.notify_diff_pre(bufnr)
   local import_status = pyright.import(winnr)
   if import_status == pyright.ImportStatus.RESOLVED_IMPORT then
-    utils.notify_diff(bufnr, prev_buf_str)
+    utils.notify_diff(bufnr, prev_buf_str, "python-import: pyright")
     return {} -- no further adding lines to buffer needed
   elseif import_status == pyright.ImportStatus.USER_ABORT then
     return {} -- no further adding lines to buffer needed

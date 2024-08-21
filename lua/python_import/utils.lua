@@ -172,7 +172,7 @@ function M.notify_diff_pre(bufnr)
   return prev_buf_str
 end
 
-function M.notify_diff(bufnr, prev_buf_str)
+function M.notify_diff(bufnr, prev_buf_str, title)
   local new_buf = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
   local new_buf_str = table.concat(new_buf, "\n")
   local diff = vim.diff(prev_buf_str, new_buf_str, { ctxlen = 3 })
@@ -183,7 +183,7 @@ function M.notify_diff(bufnr, prev_buf_str)
   diff = diff:gsub("\n$", "")
 
   notify(diff, "info", {
-    title = "python-import",
+    title = title,
     on_open = function(win)
       local buf = vim.api.nvim_win_get_buf(win)
       vim.bo[buf].filetype = "diff"
