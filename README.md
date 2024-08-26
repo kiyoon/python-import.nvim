@@ -192,6 +192,7 @@ python-import ~
 ```
 
 ## TODO
+- [ ] Search class/function/variable definitions from project
 - [ ] Add more tests
 - [ ] Command to add imports in TYPE_CHECKING
 - [ ] Command to add lazy imports in methods
