@@ -191,6 +191,15 @@ python-import ~
 - ERROR python-import cli (0.1.0+41.g9513418.dirty) and nvim plugin version (0.1.0+42.g9f74e1d.dirty) mismatch.
 ```
 
+## 💻 `python-import` CLI
+
+The `python-import` CLI is a simple Python script that counts the number of import statements used in the project.
+
+```
+$ python-import count /path/to/project np
+00004: import numpy as np
+```
+
 ## TODO
 - [ ] Search class/function/variable definitions from project
 - [ ] Add more tests
