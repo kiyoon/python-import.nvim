@@ -12,9 +12,9 @@ rich==13.7.1
     # via typer
 shellingham==1.5.4
     # via typer
-tree-sitter==0.22.3
+tree-sitter==0.23.0
     # via -r requirements.in
-tree-sitter-python @ https://github.com/kiyoon/tree-sitter-python/releases/download/temp/tree_sitter_python-0.21.0-cp38-abi3-macosx_11_0_arm64.whl
+tree-sitter-python==0.23.0
     # via -r requirements.in
 typer==0.12.4
     # via -r requirements.in
