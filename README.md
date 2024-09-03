@@ -180,10 +180,33 @@ python-import ~
 
 The `python-import` CLI is a simple Python script that counts the number of import statements used in the project.
 
-```
+```console
 $ python-import count /path/to/project np
 00004:import numpy as np
+
+$ python-import count /path/to/project pl
+00062:import polars as pl
+00006:import pytorch_lightning as pl
 ```
+
+If there are relative imports, it will convert them to absolute imports and show the absolute form. For example,
+
+- `src/my_project/a.py`
+```python
+from . import my_method
+```
+
+- `src/my_project/b.py`
+```python
+from my_project import my_method
+```
+
+Then,  
+```console
+$ python-import count . my_method
+00001:from my_project import my_method
+```
+$ python=
 
 ## TODO
 - [ ] Search class/function/variable definitions from project
