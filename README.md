@@ -204,9 +204,8 @@ from my_project import my_method
 Then,  
 ```console
 $ python-import count . my_method
-00001:from my_project import my_method
+00002:from my_project import my_method
 ```
-$ python=
 
 ## TODO
 - [ ] Search class/function/variable definitions from project
