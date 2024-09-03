@@ -197,7 +197,7 @@ The `python-import` CLI is a simple Python script that counts the number of impo
 
 ```
 $ python-import count /path/to/project np
-00004: import numpy as np
+00004:import numpy as np
 ```
 
 ## TODO
