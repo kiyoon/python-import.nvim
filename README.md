@@ -57,7 +57,8 @@ Most will use the current word to find the import statement, but the treesitter 
 ```lua
   {
     "kiyoon/python-import.nvim",
-    build = "pipx install . --force",
+    -- build = "pipx install . --force",
+    build = "uv tool install . --force --reinstall",
     keys = {
       {
         "<M-CR>",
@@ -157,22 +158,6 @@ Most will use the current word to find the import statement, but the treesitter 
   },
   "rcarriga/nvim-notify",   -- optional
 ```
-
-### Faster building with `uv`
-
-`pipx` is easy to configure, but `uv` is much faster. Make sure to install uv >= 0.2 and change the build script as follows:
-
-With lazy.nvim:
-
-```lua
-  {
-    "kiyoon/python-import.nvim",
-    build = "bash scripts/build_with_uv.sh ~/.virtualenvs/python-import",
-    -- Other configurations ...
-  },
-```
-
-This simply creates a virtual environment in `~/.virtualenvs/python-import` and installs the cli there with `uv pip install .`. Then it sym-links the binary to `~/.local/bin/python-import`.
 
 ###  🏋️ Health check
 
