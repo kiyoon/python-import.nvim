@@ -1,7 +1,7 @@
 M = {}
 
 local status2, vscode = pcall(require, "vscode")
-if status2 then
+if status2 and vscode.notify ~= nil then
   ---@param message string|string[]
   M.notify = function(message, level, opts)
     if type(message) == "table" then
