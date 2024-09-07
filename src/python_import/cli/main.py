@@ -15,7 +15,9 @@ from python_import.utils import get_all_imports_in_file_as_absolute
 
 PY_LANGUAGE = Language(tspython.language())
 
-app = typer.Typer(context_settings={"help_option_names": ["-h", "--help"]})
+app = typer.Typer(
+    no_args_is_help=True, context_settings={"help_option_names": ["-h", "--help"]}
+)
 
 
 def version_callback(value: bool):
@@ -27,7 +29,9 @@ def version_callback(value: bool):
 @app.callback()
 def common(
     ctx: typer.Context,
-    version: bool = typer.Option(None, "-v", "--version", callback=version_callback),
+    version: bool = typer.Option(
+        None, "-v", "--version", callback=version_callback, help="Show version"
+    ),
 ):
     pass
 
@@ -123,15 +127,6 @@ def count(
     #             separators=(",", ":"),
     #         )
     #     )
-
-
-@app.command()
-def dummy_do_not_use() -> None:
-    print(count.__doc__)
-
-
-def version():
-    print(python_import.__version__)
 
 
 if __name__ == "__main__":
