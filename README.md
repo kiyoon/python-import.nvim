@@ -180,6 +180,9 @@ python-import ~
 
 The `python-import` CLI is a simple Python script that counts the number of import statements used in the project.
 
+> [!NOTE]
+> You don't need to understand this section, but it helps you understand how it works.
+
 ```console
 $ python-import count /path/to/project np
 00004:import numpy as np
