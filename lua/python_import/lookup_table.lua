@@ -3,6 +3,7 @@ M = {}
 -- If nothing is found, it will return `import ..` anyway.
 -- However, it might take some time to search the candidate,
 -- so we define a list of common imports here.
+---@type string[]
 M.default_import = {
   "pickle",
   "os",
@@ -42,6 +43,7 @@ M.default_import = {
   "torch",
 }
 
+---@type table<string, string>
 M.default_import_as = {
   mp = "multiprocessing",
   np = "numpy",
@@ -56,6 +58,7 @@ M.default_import_as = {
   rx = "rustworkx",
 }
 
+---@type table<string, string>
 M.default_import_from = {
   ABC = "abc",
   ABCMeta = "abc",
@@ -262,6 +265,7 @@ M.default_import_from = {
 
   setup = "setuptools",
 
+  -- third-party
   nn = "torch",
   Image = "PIL",
   ImageDraw = "PIL",
@@ -282,12 +286,21 @@ M.default_import_from = {
   NDArray = "numpy.typing",
   ArrayLike = "numpy.typing",
   DTypeLike = "numpy.typing",
+
+  -- bioinformatics
+  pybel = "openbabel",
 }
 
+---@type table<string, table<string>>
 M.default_statement_after_imports = {
   logger = { "import logging", "", "logger = logging.getLogger(__name__)" },
+
+  -- third-party
+  -- bioinformatics
+  ob = { "from openbabel import openbabel as ob" },
 }
 
+---@type string[]
 M.python_keywords = {
   "False",
   "None",
@@ -332,6 +345,7 @@ M.python_keywords = {
 
 -- not a keyword, but a builtin
 -- https://docs.python.org/3/library/functions.html
+---@type string[]
 M.python_builtins = {
   "abs",
   "aiter",
