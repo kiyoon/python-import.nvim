@@ -15,6 +15,7 @@ def relative_import_to_absolute_import(
     project_root: str | PathLike,
     python_file_path: str | PathLike,
     from_import_name: str,
+    *,
     check_dir_exists: bool = True,
 ):
     """
@@ -275,6 +276,7 @@ def get_all_imports_in_file_as_absolute_with_word(
         ],
         cwd=project_root,
         capture_output=True,
+        check=False,
     )
     # print(rg_outputs)
 

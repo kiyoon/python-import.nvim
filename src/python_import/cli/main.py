@@ -20,15 +20,16 @@ app = typer.Typer(
 )
 
 
-def version_callback(value: bool):
+def version_callback(*, value: bool):
     if value:
         print(f"python-import v{python_import.__version__}")
-        raise typer.Exit()
+        raise typer.Exit
 
 
 @app.callback()
 def common(
     ctx: typer.Context,
+    *,
     version: bool = typer.Option(
         None, "-v", "--version", callback=version_callback, help="Show version"
     ),
@@ -79,6 +80,7 @@ def count(
         ],
         cwd=project_root,
         capture_output=True,
+        check=False,
     )
     # print(rg_outputs)
 
