@@ -22,7 +22,7 @@ jobs:
       exclude-types: build,docs,style,other
 
   publish-to-pypi:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Set up Python 3.11
         if: ${{ github.event.inputs.dry-run == 'false' }}
