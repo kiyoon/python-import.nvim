@@ -19,7 +19,7 @@ authors = [
 ]
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.9,<3.13"
+requires-python = ">=3.9,<4"
 classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
@@ -27,8 +27,9 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
-keywords = ["neovim", "nvim", "nvim-plugin", "python", "python-import"]
+keywords = ["neovim", "nvim", "nvim-plugin", "python", "python-import", "autoimport"]
 
 [project.urls]
 "Homepage" = "https://github.com/kiyoon/python-import.nvim" # OPTIONALLY CHANGE

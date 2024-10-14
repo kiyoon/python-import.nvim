@@ -68,14 +68,12 @@ def count(
     # NOTE: rg json outputs are (1, 0)-indexed
     rg_outputs = subprocess.run(
         [
-            "fd",
-            "-e",
-            "py",
-            "-x",
             "rg",
             "--word-regexp",
             "--fixed-strings",
             "--json",
+            "--type",
+            "python",
             module_name,
         ],
         cwd=project_root,

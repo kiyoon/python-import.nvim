@@ -49,7 +49,6 @@ Most will use the current word to find the import statement, but the treesitter 
 - 💻 Neovim >= 0.10
 - pipx or uv (or any other way to install `python-import` cli in PATH)
 - ripgrep (`brew install ripgrep` or `cargo install ripgrep`)
-- fd (`brew install fd`, `cargo install fd-find` or `npm install -g fd-find`)
 
 
 ### Install with lazy.nvim:
@@ -171,7 +170,6 @@ python_import: require("python_import.health").check()
 python-import ~
 - OK Using Neovim >= 0.10.0
 - OK `rg` is installed
-- OK `fd` is installed
 - OK `python-import` is installed
 - ERROR python-import cli (0.1.0+41.g9513418.dirty) and nvim plugin version (0.1.0+42.g9f74e1d.dirty) mismatch.
 ```

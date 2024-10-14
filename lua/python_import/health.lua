@@ -21,7 +21,7 @@ function M.check()
     vim.health.error "Neovim >= 0.10.0 is required"
   end
 
-  for _, cmd in ipairs { "rg", "fd" } do
+  for _, cmd in ipairs { "rg" } do
     if vim.fn.executable(cmd) == 1 then
       vim.health.ok(("`%s` is installed"):format(cmd))
     else
@@ -67,7 +67,7 @@ end
 
 ---@return boolean
 function M.is_python_cli_installed()
-  for _, cmd in ipairs { "rg", "fd", "python-import" } do
+  for _, cmd in ipairs { "rg", "python-import" } do
     if vim.fn.executable(cmd) ~= 1 then
       return false
     end

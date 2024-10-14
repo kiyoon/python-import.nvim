@@ -1,4 +1,4 @@
 -r requirements.in
-ruff==0.6.7
+ruff==0.6.9
 pytest>=8.0.1
 pytest-cov>=4.1.0
