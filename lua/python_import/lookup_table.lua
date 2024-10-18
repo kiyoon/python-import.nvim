@@ -260,8 +260,9 @@ M.default_import_from = {
   TypeGuard = "typing",
   overload = "typing",
 
-  override = "typing_extensions",
-  deprecated = "typing_extensions",
+  override = "typing_extensions", -- in typing since Python 3.12
+  deprecated = "typing_extensions", -- in warnings since Python 3.13
+  Self = "typing_extensions", -- in typing since Python 3.11
 
   setup = "setuptools",
 
