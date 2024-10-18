@@ -32,6 +32,7 @@ M.default_import = {
   "typing",
   "typing_extensions",
   "setuptools",
+  "subprocess",
   "xml",
 
   -- third-party
@@ -265,6 +266,14 @@ M.default_import_from = {
   Self = "typing_extensions", -- in typing since Python 3.11
 
   setup = "setuptools",
+
+  Popen = "subprocess",
+  PIPE = "subprocess",
+  STDOUT = "subprocess",
+  DEVNULL = "subprocess",
+  SubprocessError = "subprocess",
+  CalledProcessError = "subprocess",
+  CompletedProcess = "subprocess",
 
   -- third-party
   nn = "torch",
