@@ -43,6 +43,15 @@ where = ["src"]
 [project.scripts]
 python-import = "python_import.cli:app"
 
+[tool.pyright]
+include = ["src"]
+
+typeCheckingMode = "standard"
+useLibraryCodeForTypes = true
+autoImportCompletions = true
+
+pythonVersion = "3.9"
+
 [tool.pytest.ini_options]
 addopts = "--cov=python_import" # CHANGE (name of the importing module name)
 testpaths = ["tests"]
@@ -52,7 +61,7 @@ log_cli_level = "INFO"
 
 [tool.ruff]
 src = ["src"]  # for ruff isort
-namespace-packages = ["tools", "scripts"]  # for INP rule, suppress on these directories
+namespace-packages = ["tools", "scripts", "tests"]  # for INP rule, suppress on these directories
 extend-exclude = [
   "src/python_import/_version.py",  # CHANGE
   "tests/sample_projects/project1/*",
@@ -156,15 +165,6 @@ banned-module-level-imports = ["torch", "tensorflow"]
 max-args = 10
 max-bool-expr = 10
 max-statements = 100
-
-[tool.pyright]
-include = ["src"]
-
-typeCheckingMode = "standard"
-useLibraryCodeForTypes = true
-autoImportCompletions = true
-
-pythonVersion = "3.9"
 
 [tool.coverage.report]
 omit = [

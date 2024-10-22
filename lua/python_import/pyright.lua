@@ -1,6 +1,6 @@
 -- Taken from https://github.com/stevanmilic/nvim-lspimport
--- Modified to work with basedpyright, and with Spanish (item.menu == "Importación automática")
--- NOTE: You need to use pyright with either English or Spanish, and enable reportUndefinedVariable.
+-- Modified to work with basedpyright, and with other languages (e.g., item.menu == "Importación automática")
+-- NOTE: You need to enable reportUndefinedVariable in pyright settings.
 -- TODO: Make it work with vscode. Probably add pylance source and use a proper LSP function that vscode-neovim overrides.
 
 local M = {}
@@ -11,6 +11,24 @@ M.ImportStatus = {
   USER_ABORT = "USER_ABORT",
   NO_IMPORT = "NO_IMPORT",
   ERROR = "ERROR",
+}
+
+local auto_import_completion_item_name_in_all_langs = {
+  ["Auto-import"] = true,
+  ["Importación automática"] = true,
+  ["Importação automática"] = true,
+  ["Importation automatique"] = true,
+  ["Importazione automatica"] = true,
+  ["自動インポート"] = true,
+  ["자동 가져오기"] = true,
+  ["Autoimport"] = true, -- de
+  ["Automatický import"] = true,
+  ["Automatyczne importowanie"] = true,
+  ["[WdNQG][นั้Æµtø-ïmpørtẤğ倪İนั้ढूँ]"] = true,
+  ["Авто-импорт"] = true,
+  ["自动导入"] = true,
+  ["自動匯入"] = true,
+  ["Otomatik içeri aktarma"] = true,
 }
 
 ---@class lspimport.Server
@@ -29,7 +47,7 @@ local function pyright_server()
   ---@param item any
   ---@return boolean
   local function is_auto_import_completion_item(item)
-    return item.menu == "Auto-import" or item.menu == "Importación automática"
+    return auto_import_completion_item_name_in_all_langs[item.menu] == true
   end
 
   return {
