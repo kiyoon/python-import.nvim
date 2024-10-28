@@ -108,6 +108,7 @@ M.default_import_from = {
   Flag = "enum",
   IntEnum = "enum",
   IntFlag = "enum",
+  StrEnum = "enum",
 
   update_wrapper = "functools",
   wraps = "functools",
