@@ -245,7 +245,6 @@ M.default_import_from = {
   Set = "typing",
   FrozenSet = "typing",
   NamedTuple = "typing",
-  TypedDict = "typing",
   Generator = "typing",
   BinaryIO = "typing",
   IO = "typing",
@@ -265,6 +264,9 @@ M.default_import_from = {
   override = "typing_extensions", -- in typing since Python 3.12
   deprecated = "typing_extensions", -- in warnings since Python 3.13
   Self = "typing_extensions", -- in typing since Python 3.11
+  TypedDict = "typing_extensions",
+  NotRequired = "typing_extensions", -- in typing since Python 3.11
+  Required = "typing_extensions", -- in typing since Python 3.11
 
   setup = "setuptools",
 
