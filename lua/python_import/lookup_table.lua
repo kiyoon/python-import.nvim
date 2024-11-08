@@ -255,6 +255,7 @@ M.default_import_from = {
   AnyStr = "typing",
   NewType = "typing",
   NoReturn = "typing",
+  Never = "typing",
   ParamSpecArgs = "typing",
   ParamSpecKwargs = "typing",
   Text = "typing",
