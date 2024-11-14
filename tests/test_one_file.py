@@ -10,6 +10,7 @@ from python_import.utils import get_all_imports_in_file_as_absolute_with_word
 
 logger = logging.getLogger(__name__)
 
+
 SCRIPT_DIR = Path(__file__).parent
 PY_LANGUAGE = Language(tspython.language())
 parser = Parser(PY_LANGUAGE)

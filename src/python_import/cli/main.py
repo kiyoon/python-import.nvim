@@ -39,7 +39,7 @@ def common(
 
 @app.command()
 def count(
-    project_root: str,
+    project_root: Path,
     module_name: str,
 ) -> None:
     """
@@ -92,7 +92,7 @@ def count(
         # print(rg_output["type"])
         if rg_output["type"] == "match":
             file_path = str(
-                (Path(project_root) / rg_output["data"]["path"]["text"]).resolve()
+                (project_root / rg_output["data"]["path"]["text"]).resolve()
             )
             row = rg_output["data"]["line_number"] - 1
             col = rg_output["data"]["submatches"][0]["start"]

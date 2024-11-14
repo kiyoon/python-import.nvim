@@ -83,6 +83,8 @@ M.default_import_from = {
   nullcontext = "contextlib",
   closing = "contextlib",
   deepcopy = "copy",
+  redirect_stdout = "contextlib",
+  redirect_stderr = "contextlib",
 
   OrderedDict = "collections",
   namedtuple = "collections",

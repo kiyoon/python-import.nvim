@@ -59,6 +59,12 @@ testpaths = ["tests"]
 log_cli = true
 log_cli_level = "INFO"
 
+[tool.coverage.report]
+omit = [
+  "src/python_import/_version.py", # CHANGE
+  # OPTIONALLY ADD MORE LATER
+]
+
 [tool.ruff]
 src = ["src"]  # for ruff isort
 namespace-packages = ["tools", "scripts", "tests"]  # for INP rule, suppress on these directories
@@ -166,8 +172,3 @@ max-args = 10
 max-bool-expr = 10
 max-statements = 100
 
-[tool.coverage.report]
-omit = [
-  "src/python_import/_version.py", # CHANGE
-  # OPTIONALLY ADD MORE LATER
-]
