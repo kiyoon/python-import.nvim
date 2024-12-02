@@ -365,6 +365,8 @@ M.default_import_from = {
   confrozenset = "pydantic.types",
   constr = "pydantic.types",
 
+  polarify = "polarify",
+
   -- bioinformatics
   pybel = "openbabel",
 }
