@@ -164,6 +164,9 @@ M.default_import_from = {
   import_module = "importlib",
   invalidate_caches = "importlib",
   reload = "importlib",
+  spec_from_file_location = "importlib.util",
+  module_from_spec = "importlib.util",
+  find_spec = "importlib.util",
 
   BlockingIOError = "io",
   IOBase = "io",
