@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-import tree_sitter
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import tree_sitter
 
 
 def get_node(tree: tree_sitter.Tree, row_col: tuple[int, int]):

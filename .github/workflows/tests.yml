@@ -27,7 +27,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -r deps/lock/x86_64-manylinux_2_28/requirements_dev.txt
-          uv pip install -e .
+          uv pip install .
       - name: Run pytest
         uses: deargen/workflows/actions/run-pytest@master
         with:
@@ -52,6 +52,6 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -r deps/lock/x86_64-manylinux_2_28/requirements_dev.txt
-          uv pip install -e .
+          uv pip install .
       - name: Run doctest
         uses: deargen/workflows/actions/run-doctest@master

@@ -1,14 +1,22 @@
 [build-system]
-requires = ["setuptools>=60", "versioneer[toml]==0.29"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-requirements-txt", "version-pioneer"]
+build-backend = "hatchling.build"
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "src/python_import/_version.py" # CHANGE
-versionfile_build = "python_import/_version.py"      # CHANGE
-tag_prefix = "v"
-parentdir_prefix = "python_import-"                  # CHANGE
+[tool.hatch.metadata.hooks.requirements_txt]
+files = ["deps/requirements.in"]
+
+[tool.hatch.metadata.hooks.requirements_txt.optional-dependencies]
+dev = ["deps/requirements_dev.in"]
+
+[tool.hatch.version]
+source = "version-pioneer"
+
+[tool.hatch.build.hooks.version-pioneer]
+
+[tool.version-pioneer]
+versionscript = "src/python_import/_version.py" # CHANGE
+versionfile-source = "src/python_import/_version.py" # CHANGE
+versionfile-build = "python_import/_version.py"      # CHANGE
 
 [project]
 name = "python-import" # CHANGE
@@ -34,14 +42,14 @@ keywords = ["neovim", "nvim", "nvim-plugin", "python", "python-import", "autoimp
 [project.urls]
 "Homepage" = "https://github.com/kiyoon/python-import.nvim" # OPTIONALLY CHANGE
 
-[tool.setuptools.dynamic]
-dependencies = {file = ["deps/requirements.in"]}
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
 [project.scripts]
 python-import = "python_import.cli:app"
+
+[tool.projector.pip-compile]
+# https://github.com/deargen/workflows/blob/master/python-projector
+requirements-in-dir = "deps"
+requirements-out-dir = "deps/lock"
+python-platforms = ["x86_64-manylinux_2_28", "aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-pc-windows-msvc"]
 
 [tool.pyright]
 include = ["src"]
@@ -66,10 +74,10 @@ omit = [
 ]
 
 [tool.ruff]
-src = ["src"]  # for ruff isort
-namespace-packages = ["tools", "scripts", "tests"]  # for INP rule, suppress on these directories
+# Ignore INP001 on these directories
+# The directories that do not contain s, r, and c are already ignored.
+namespace-packages = ["scripts"]
 extend-exclude = [
-  "src/python_import/_version.py",  # CHANGE
   "tests/sample_projects/project1/*",
   "scripts/version_from_tag.py",
 ]
@@ -77,52 +85,7 @@ extend-exclude = [
 [tool.ruff.lint]
 # OPTIONALLY ADD MORE LATER
 select = [
-  # flake8
-  "E",
-  "F",
-  "W",
-  "B",    # Bugbear
-  "D",    # Docstring
-  "D213", # Multi-line docstring summary should start at the second line (replace D212)
-  "N",    # Naming
-  "C4",   # flake8-comprehensions
-  "UP",   # pyupgrade
-  "SIM",  # simplify
-  "RUF",  # ruff-specific
-  "RET501",  # return
-  "RET502",  # return
-  "RET503",  # return
-  "PTH",  # path
-  "NPY",  # numpy
-  "PD",   # pandas
-  "PYI",  # type stubs for pyright/pylance
-  "PT",   # pytest
-  "PIE",  #
-  "LOG",  # logging
-  "COM818",  # comma misplaced
-  "COM819",  # comma
-  "DTZ",  # datetime
-  "YTT",
-  "ASYNC",
-  "FBT",  # boolean trap
-  "A",    # Shadowing python builtins
-  "EXE",  # executable (shebang)
-  "FA",   # future annotations
-  "ISC",  # Implicit string concatenation
-  "ICN",  # Import convention 
-  "INP",  # Implicit namespace package (no __init__.py)
-  "Q",    # Quotes
-  "RSE",  # raise
-  "SLOT", # __slots__
-  "PL",   # Pylint
-  "TRY",  # try
-  "FAST", # FastAPI
-  "AIR",  # airflow
-  "DOC",  # docstring
-
-  # Not important
-  "T10",  # debug statements
-  "T20",  # print statements
+  "ALL",
 ]
 
 ignore = [
@@ -131,6 +94,7 @@ ignore = [
   "W291",    # Trailing whitespace
   "D10",     # Missing docstring in public module / function / etc.
   "D200",    # One-line docstring should fit on one line with quotes
+  "D205",    # 1 blank line required between summary line and description
   "D212",    # Multi-line docstring summary should start at the first line
   "D417",    # require documentation for every function parameter.
   "D401",    # require an imperative mood for all docstrings.
@@ -142,7 +106,32 @@ ignore = [
   "UP017",   # datetime.timezone.utc -> datetime.UTC
   "SIM108",  # use ternary operator instead of if-else
   "TRY003",  # long message in except
+  "TRY400",  # logger.exception instead of logger.error
+  "PLR2004", # magic value comparison
+  "PLW2901",  # loop variable overwritten by assignment target
+  "COM812",  # missing trailing comma
+  "RET504",  # return with unnecessary assignment
+  "RET505",
+  "RET506",
+  "RET507",
+  "RET508",
+  "S",       # Security issues
+  "ANN",     # Missing type annotations
+  "ERA001",  # commented-out code
+  "G",       # Logging with format string
+  "EM",      # error message has to be variable
+  "SLF001",  # private member access
+  "TD",      # TODO
+  "FIX",     # TODO
+  "ARG",     # unused argument
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "F401", # Ignore seemingly unused imports (they're meant for re-export)
+]
+# Directories that do not contain s, r, and c
+"[!s][!r][!c]*/**" = ["INP001"] # Implicit namespace package (no __init__.py)
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -155,20 +144,44 @@ max-line-length = 120
 [tool.ruff.lint.isort]
 # combine-as-imports = true
 known-third-party = ["wandb"]
-
-## Uncomment this if you want to use Python < 3.10
-required-imports = [
-  "from __future__ import annotations",
+known-first-party = [
+  "rust_graph",
+  "bio_data_to_db",
+  "reduce_binary",
+  "apbs_binary",
+  "msms_binary",
+  "slack_helpers",
+  "biotest",
 ]
 
-[tool.ruff.lint.flake8-tidy-imports]
+## Uncomment this if you want to use Python < 3.10
+# required-imports = [
+#   "from __future__ import annotations",
+# ]
+
+# [tool.ruff.lint.flake8-tidy-imports]
 # Ban certain modules from being imported at module level, instead requiring
 # that they're imported lazily (e.g., within a function definition, if TYPE_CHECKING, etc.)
-# NOTE: Ruff code TID is currently disabled, so this settings doesn't do anything.
-banned-module-level-imports = ["torch", "tensorflow"]
+# banned-module-level-imports = ["torch"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"pytorch_lightning".msg = "Use lightning.fabric instead"
+"lightning.pytorch".msg = "Use lightning.fabric instead"
+"lightning_fabric".msg = "Use lightning.fabric instead"
+"accelerate".msg = "Use lightning.fabric instead"
+"os.system".msg = "Use subprocess.run or subprocess.Popen instead"
+"easydict".msg = "Use typing.TypedDict instead (also consider dataclasses and pydantic)"
 
 [tool.ruff.lint.pylint]
-max-args = 10
+max-args = 15
 max-bool-expr = 10
 max-statements = 100
+max-returns = 6
+max-public-methods = 30
+max-nested-blocks = 10
+max-locals = 30
+max-branches = 24
 
+[tool.ruff.lint.mccabe]
+# C901: limit the number of decision points in a function
+max-complexity = 20
