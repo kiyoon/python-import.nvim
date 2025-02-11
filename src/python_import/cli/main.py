@@ -4,7 +4,7 @@ from __future__ import annotations
 import json
 import subprocess
 from collections import defaultdict
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import tree_sitter_python as tspython
 import typer
@@ -12,6 +12,9 @@ from tree_sitter import Language, Parser
 
 import python_import
 from python_import.utils import get_all_imports_in_file_as_absolute
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 PY_LANGUAGE = Language(tspython.language())
 

@@ -3,12 +3,15 @@ from __future__ import annotations
 import json
 import subprocess
 from collections import defaultdict
-from os import PathLike
 from pathlib import Path
-
-from tree_sitter import Parser
+from typing import TYPE_CHECKING
 
 from .ts_utils import get_node
+
+if TYPE_CHECKING:
+    from os import PathLike
+
+    from tree_sitter import Parser
 
 
 def relative_import_to_absolute_import(
