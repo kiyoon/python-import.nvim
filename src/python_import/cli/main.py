@@ -1,10 +1,10 @@
-# ruff: noqa: T201
+# ruff: noqa: T201 TC003
 from __future__ import annotations
 
 import json
 import subprocess
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 import tree_sitter_python as tspython
 import typer
@@ -12,9 +12,6 @@ from tree_sitter import Language, Parser
 
 import python_import
 from python_import.utils import get_all_imports_in_file_as_absolute
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 PY_LANGUAGE = Language(tspython.language())
 

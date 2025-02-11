@@ -15,7 +15,7 @@ source = "version-pioneer"
 
 [tool.version-pioneer]
 versionscript = "src/python_import/_version.py" # CHANGE
-versionfile-source = "src/python_import/_version.py" # CHANGE
+versionfile-sdist = "src/python_import/_version.py" # CHANGE
 versionfile-build = "python_import/_version.py"      # CHANGE
 
 [project]
