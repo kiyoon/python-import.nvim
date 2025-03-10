@@ -1,6 +1,6 @@
 local notify = require("python_import.notify").notify
 
-M = {}
+local M = {}
 
 ---Return line after the first comments and docstring.
 ---It iterates e.g. 50 first lines and obtains treesitter nodes to check the syntax (string or comment)

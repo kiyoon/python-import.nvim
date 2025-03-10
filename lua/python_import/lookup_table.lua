@@ -1,4 +1,4 @@
-M = {}
+local M = {}
 
 -- If nothing is found, it will return `import ..` anyway.
 -- However, it might take some time to search the candidate,

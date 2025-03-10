@@ -6,7 +6,7 @@ local config = require "python_import.config"
 local pyright = require "python_import.pyright"
 local notify = require("python_import.notify").notify
 
-M = {}
+local M = {}
 
 ---@param winnr integer
 ---@param word string

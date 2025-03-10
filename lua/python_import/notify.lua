@@ -1,4 +1,4 @@
-M = {}
+local M = {}
 
 local status2, vscode = pcall(require, "vscode")
 if status2 and vscode.notify ~= nil then
