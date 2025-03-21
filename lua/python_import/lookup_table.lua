@@ -536,6 +536,11 @@ M.default_import_from = {
 
   polarify = "polarify",
 
+  beartype = "beartype",
+  beartype_this_package = "beartype.claw",
+  beartype_all = "beartype.claw",
+  BeartypeConf = "beartype",
+
   -- bioinformatics
   pybel = "openbabel",
 }
