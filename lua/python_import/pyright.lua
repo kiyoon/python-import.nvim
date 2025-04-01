@@ -107,8 +107,16 @@ end
 ---@return table[]
 local lsp_to_complete_items = function(result, prefix)
   -- TODO: use another function once it's available in public API.
-  -- See: https://neovim.io/doc/user/deprecated.html#vim.lsp.util.text_document_completion_list_to_complete_items()
+  if vim.fn.has "nvim-0.11" == 1 then
+    return vim.lsp.completion._lsp_to_complete_items(result, prefix)
+  end
+
+  -- nvim 0.10
   return vim.lsp._completion._lsp_to_complete_items(result, prefix)
+
+  -- nvim 0.9 ..
+  -- See: https://neovim.io/doc/user/deprecated.html#vim.lsp.util.text_document_completion_list_to_complete_items()
+  -- return vim.lsp.util.text_document_completion_list_to_complete_items(result, prefix)
 end
 
 ---@param server lspimport.Server
