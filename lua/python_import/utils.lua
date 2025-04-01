@@ -188,6 +188,8 @@ function M.notify_diff(bufnr, prev_buf_str, title)
       local buf = vim.api.nvim_win_get_buf(win)
       vim.bo[buf].filetype = "diff"
     end,
+    -- BUG: nvim 0.11 has a bug with filetype diff with animate where it will stop animating and won't display / disappear properly.
+    animate = false,
   })
 end
 
