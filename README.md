@@ -112,7 +112,7 @@ Most will use the current word to find the import statement, but the treesitter 
     opts = {
       -- Example 1:
         -- Default behaviour for `tqdm` is `from tqdm.auto import tqdm`.
-        -- If you want to change it to `import tqdm`, you can set `import = {"tqdm"}` and `import_from = {tqdm = nil}` here.
+        -- If you want to change it to `import tqdm`, you can set `import = {"tqdm"}` and `import_from = {tqdm = vim.NIL}` here.
         -- If you want to change it to `from tqdm import tqdm`, you can set `import_from = {tqdm = "tqdm"}` here.
 
       -- Example 2:
@@ -125,20 +125,20 @@ Most will use the current word to find the import statement, but the treesitter 
           -- "tqdm",
         },
 
-        ---@type table<string, string>
+        ---@type table<string, string|vim.NIL>
         import_as = {
           -- These are the default values. Here for demonstration.
           -- np = "numpy",
           -- pd = "pandas",
         },
 
-        ---@type table<string, string>
+        ---@type table<string, string|vim.NIL>
         import_from = {
-          -- tqdm = nil,
+          -- tqdm = vim.NIL,
           -- tqdm = "tqdm",
         },
 
-        ---@type table<string, string[]>
+        ---@type table<string, string[]|vim.NIL>
         statement_after_imports = {
           -- logger = { "import my_custom_logger", "", "logger = my_custom_logger.get_logger()" },
         },

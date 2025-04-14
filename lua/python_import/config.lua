@@ -8,19 +8,19 @@ M.default_opts = {
       -- "pickle",
     },
 
-    ---@type table<string, string>
+    ---@type table<string, string|vim.NIL>
     import_as = {
       -- np = "numpy",
       -- pd = "pandas",
     },
 
-    ---@type table<string, string>
+    ---@type table<string, string|vim.NIL>
     import_from = {
       -- tqdm = "tqdm.auto",
       -- nn = "torch",
     },
 
-    ---@type table<string, string[]>
+    ---@type table<string, string[]|vim.NIL>
     statement_after_imports = {
       -- logger = { "import my_custom_logger", "", "logger = my_custom_logger.get_logger()" },
     },
