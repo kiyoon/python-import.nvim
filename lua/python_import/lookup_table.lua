@@ -433,6 +433,7 @@ M.default_import_from = {
   TypeAlias = "typing",
   TypeGuard = "typing",
   overload = "typing",
+  cast = "typing",
 
   override = "typing_extensions", -- in typing since Python 3.12
   deprecated = "typing_extensions", -- in warnings since Python 3.13
