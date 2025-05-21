@@ -434,6 +434,9 @@ M.default_import_from = {
   TypeGuard = "typing",
   overload = "typing",
   cast = "typing",
+  assert_type = "typing",
+  assert_never = "typing",
+  reveal_type = "typing",
 
   override = "typing_extensions", -- in typing since Python 3.12
   deprecated = "typing_extensions", -- in warnings since Python 3.13
