@@ -545,6 +545,31 @@ M.default_import_from = {
   beartype_all = "beartype.claw",
   BeartypeConf = "beartype",
 
+  -- sql
+  SQLModel = "sqlmodel",
+
+  select = "sqlalchemy",
+  asc = "sqlalchemy",
+  desc = "sqlalchemy",
+  -- func = "sqlalchemy",  -- too generic name
+  literal_column = "sqlalchemy",
+  bindparam = "sqlalchemy",
+  LargeBinary = "sqlalchemy",
+  ForeignKey = "sqlalchemy",
+  foreign = "sqlalchemy.orm",
+  DeclarativeBase = "sqlalchemy.orm",
+  declarative_base = "sqlalchemy.orm",
+  Mapped = "sqlalchemy.orm",
+  column_property = "sqlalchemy.orm",
+  mapped_column = "sqlalchemy.orm",
+  contains_eager = "sqlalchemy.orm",
+  relationship = "sqlalchemy.orm",
+  seledtinload = "sqlalchemy.orm",
+  joinedload = "sqlalchemy.orm",
+  sessionmaker = "sqlalchemy.orm",
+  async_sessionmaker = "sqlalchemy.ext.asyncio",
+  AsyncEngine = "sqlalchemy.ext.asyncio",
+
   -- bioinformatics
   pybel = "openbabel",
 }
