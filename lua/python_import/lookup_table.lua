@@ -540,6 +540,8 @@ M.default_import_from = {
   confrozenset = "pydantic.types",
   constr = "pydantic.types",
 
+  computed_field = "pydantic.fields",
+
   polarify = "polarify",
 
   beartype = "beartype",
