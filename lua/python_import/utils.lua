@@ -99,8 +99,8 @@ local function find_python_first_party_modules(bufnr)
     local files = vim.fn.readdir(dir)
     for _, file in ipairs(files) do
       local path = dir .. "/" .. file
-      local stat = vim.loop.fs_stat(path)
-      if stat.type == "directory" then
+      local stat = (vim.uv or vim.loop).fs_stat(path)
+      if stat ~= nil and stat.type == "directory" then
         -- no egg-info
         if file:match "%.egg%-info$" == nil then
           modules[#modules + 1] = file
