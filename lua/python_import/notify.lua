@@ -13,6 +13,13 @@ else
   local status, nvim_notify = pcall(require, "notify")
   if status then
     M.notify = nvim_notify
+  else
+    M.notify = function(message, level, opts)
+      if type(message) == "table" then
+        message = table.concat(message, "\n")
+      end
+      vim.notify(message, level, opts)
+    end
   end
 end
 
